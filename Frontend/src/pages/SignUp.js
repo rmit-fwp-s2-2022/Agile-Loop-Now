@@ -14,10 +14,11 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import FormField from "./FormField";
-import { addUser } from "../data/User";
+import { findUser, createUser } from "../data/repository";
 
 function SignUp(props) {
   const navigate = useNavigate();
+
   return (
     <Box minH={"87vh"}>
       <Center minH={"80vh"}>
@@ -32,7 +33,19 @@ function SignUp(props) {
             name: Yup.string().required("Name is required"),
             email: Yup.string()
               .email("Email must be a valid Email")
-              .required("Email is required"),
+              .required("Email is required")
+              .test(
+                "validateEmail",
+                "An account with this email already exists",
+                async function () {
+                  const user = await findUser(this.parent.email);
+                  if (user !== null){
+                    return false
+                  }else{
+                    return true
+                  }
+                }
+              ),
             password: Yup.string()
               .required("Password is required")
               .matches(
@@ -44,20 +57,22 @@ function SignUp(props) {
               .oneOf([Yup.ref("password"), null], "Passwords must match"),
           })}
           onSubmit={(values) => {
-            setTimeout(() => {
+            setTimeout(async () => {
               const joined = new Date();
          
-              let user = {
+              const user = {
                 name: values.name,
                 email: values.email,
                 password: values.password,
                 joinedOn: joined,
               };
-              addUser(user); //Add user to local storage
-              props.loginUser(user.email); //Set logged in user
+              await createUser(user); //Add user to mySQL database
+              // addUser(user); //Add user to local storage
+              props.loginUser(user); //Set logged in user
               navigate("/");
             }, 1500);
           }}
+          
         >
           {(formik) => (
             <Container

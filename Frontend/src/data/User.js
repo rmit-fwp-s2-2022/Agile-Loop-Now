@@ -44,8 +44,8 @@ function verifyEmail(email) {
 }
 
 //Set the current logged in user in sessionStorage (Referenced from Week 3 Lecture code example 10)
-function setCurrentUser(email) {
-  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(getUser(email)));
+function setCurrentUser(user) {
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
 }
 
 //Get the current logged in user details from session storage (Referenced from Week 3 Lecture code example 10)

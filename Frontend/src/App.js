@@ -21,9 +21,9 @@ function App() {
     setAuthenticate(userInfo);
   };
 
-  const loginUser = (email) => {
-    setCurrentUser(email);
-    setUser(getCurrentUser());
+  const loginUser = (user) => {
+    setCurrentUser(user);
+    setUser(user);
     setLoggedIn(true);
   };
 

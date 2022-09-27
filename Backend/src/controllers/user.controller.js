@@ -1,4 +1,4 @@
-//The code below is taken from Lectorial code archive week 8
+//The code below is taken from Lectorial code archive week 7
 //Writen by Shekhar Kalra
 
 const db = require("../database");

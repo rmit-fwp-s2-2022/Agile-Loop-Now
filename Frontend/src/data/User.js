@@ -1,13 +1,19 @@
+//The code below is taken from Lectorial code archive week 8
+//Writen by Shekhar Kalra
+import http from "./http-common";
+
 import { deleteAllUserPost } from "./Posts";
 const USERS_KEY = "users";
 const CURRENT_KEY = "currentUser";
 const AUTH_KEY = "authuser";
 
 //Get every registered user from localStorage (Referenced from Week 3 Lecture code example 10)
-function getUsers() {
-  const data = localStorage.getItem(USERS_KEY);
-  return JSON.parse(data);
+async function getUsers() {
+  const data = await http.get("/users");
+
+  return data.json();
 }
+
 //Get user details of a user from their email
 function getUser(email) {
   const userData = getUsers();

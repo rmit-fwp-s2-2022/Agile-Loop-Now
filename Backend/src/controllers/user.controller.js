@@ -18,21 +18,29 @@ exports.one = async (req, res) => {
   res.json(user);
 };
 
+exports.getName = async (req, res) => {
+  const user = await db.user.findOne({ where: { name: req.params.user } });
+
+  res.json(user);
+};
+
 // Select one user from the database if username and password are a match.
 exports.login = async (req, res) => {
   const user = await db.user.findByPk(req.query.email);
 
-  if(user === null || await argon2.verify(user.password_hash, req.query.password) === false)
+  if (
+    user === null ||
+    (await argon2.verify(user.password_hash, req.query.password)) === false
+  )
     // Login failed.
     res.json(null);
-  else
-    res.json(user);
+  else res.json(user);
 };
 
 // Create a user in the database.
 exports.create = async (req, res) => {
   const hash = await argon2.hash(req.body.password, { type: argon2.argon2id });
-  
+
   const user = await db.user.create({
     email: req.body.email,
     password_hash: hash,

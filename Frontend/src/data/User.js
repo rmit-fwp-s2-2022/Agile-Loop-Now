@@ -7,11 +7,9 @@ const USERS_KEY = "users";
 const CURRENT_KEY = "currentUser";
 const AUTH_KEY = "authuser";
 
-//Get every registered user from localStorage (Referenced from Week 3 Lecture code example 10)
 async function getUsers() {
-  const data = await http.get("/users");
-
-  return data.json();
+  const res = await http.get("/users");
+  return res.data;
 }
 
 //Get user details of a user from their email
@@ -28,16 +26,20 @@ function getUser(email) {
 }
 
 //Add a user to localStorage
-function addUser(user) {
+async function addUser(user) {
   //If there are already users registered, retrieve all users and add the new user onto the user array and store the updated list in localStorage
-  if (getUsers() !== null) {
-    let data = getUsers();
-    data.push(user);
-    localStorage.setItem(USERS_KEY, JSON.stringify(data));
-  } else {
-    const data = [user];
-    localStorage.setItem(USERS_KEY, JSON.stringify(data));
-  }
+
+  const res = await http.post("/users/create", user);
+
+  return res.data;
+  // if (getUsers() !== null) {
+  //   let data = getUsers();
+  //   data.push(user);
+  //   localStorage.setItem(USERS_KEY, JSON.stringify(data));
+  // } else {
+  //   const data = [user];
+  //   localStorage.setItem(USERS_KEY, JSON.stringify(data));
+  // }
 }
 
 //Check whether an email has already been registered
@@ -48,7 +50,6 @@ function verifyEmail(email) {
     return true;
   }
 }
-
 //Set the current logged in user in sessionStorage (Referenced from Week 3 Lecture code example 10)
 function setCurrentUser(user) {
   sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
@@ -122,6 +123,7 @@ function getAuthentication() {
 }
 
 export {
+  getUsers,
   addUser,
   getUser,
   verifyEmail,

@@ -23,14 +23,12 @@ async function findUser(id) {
 
 async function createUser(user) {
   const response = await axios.post(API_HOST + "/api/users", user);
-
   return response.data;
 }
 
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
   const response = await axios.get(API_HOST + "/api/posts");
-
   return response.data;
 }
 

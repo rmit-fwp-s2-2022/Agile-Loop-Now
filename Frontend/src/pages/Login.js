@@ -9,33 +9,21 @@ import {
   Link,
   Alert,
   AlertIcon,
-  useToast,
 } from "@chakra-ui/react";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
 import FormField from "./FormField";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { verifyUser } from "../data/repository";
 
-// import { getUser } from "../data/User";
-// import { generateCode, sendCode } from "../services/VerifyUser";
-// import { setAuthentication } from "../data/User";
-
+import { getUser } from "../data/User";
+import { generateCode, sendCode } from "../services/VerifyUser";
+import { setAuthentication } from "../data/User";
+import { useState } from "react";
 function Login(props) {
+  const [alertOn, setAlertOn] = useState(false);
   const navigate = useNavigate();
-  const toast = useToast();
-
-  const onSubmit = async (user) => {
-    const data = await verifyUser(user.email, user.password);
-    console.log(data);
-    if (data !== null) {
-      console.log("here2");
-      props.loginUser(data);
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   return (
     <Box minH={"87vh"}>
@@ -49,25 +37,38 @@ function Login(props) {
             email: Yup.string()
               .email("Email must be a valid Email")
               .required("Email is required"),
-            password: Yup.string().required("Password is required"),
+            password: Yup.string()
+              .required("Password is required")
+              .test(
+                "validateUser",
+                "Invalid Email or Password. Try Again",
+                //Check password and email of user
+                async function () {
+                  if (
+                    (await verifyUser(
+                      this.parent.email,
+                      this.parent.password
+                    )) !== null
+                  ) {
+                    setAlertOn(true);
+                    return true;
+                  } else {
+                    setAlertOn(false);
+                    return false;
+                  }
+                }
+              ),
           })}
           onSubmit={(values) => {
-            onSubmit(values).then((response) => {
-              console.log(response);
-              if (response) {
-                navigate("/authenticate");
-              } else {
-                toast({
-                  title: "Error",
-                  description: "Password or Username is not valid.",
-                  status: "error",
-                  duration: 6000,
-                  isClosable: true,
-                });
-              }
-            });
-            // console.log(state);
-            // setTimeout(() => {}, 1200);
+            setTimeout(() => {
+              const code = generateCode();
+              const user = getUser(values.email);
+              props.verifyUser({ info: user, code: code });
+              sendCode(user.name, code);
+              setAuthentication(user, code);
+              navigate("/authenticate");
+            }, 1500);
+            //
           }}
           validateOnChange={false}
           validateOnBlur={false}
@@ -104,7 +105,7 @@ function Login(props) {
                   <Stack spacing={4}>
                     <Alert
                       status="success"
-                      display={formik.isSubmitting ? "inherit" : "none"}
+                      display={alertOn ? "inherit" : "none"}
                     >
                       <AlertIcon />
                       Sending Verification Code!

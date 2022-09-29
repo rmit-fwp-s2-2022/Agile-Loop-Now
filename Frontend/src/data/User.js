@@ -42,7 +42,7 @@ async function addUser(user) {
   // }
 }
 
-//Check whether an email has already been registered
+// Check whether an email has already been registered
 function verifyEmail(email) {
   if (getUser(email) === null) {
     return false;

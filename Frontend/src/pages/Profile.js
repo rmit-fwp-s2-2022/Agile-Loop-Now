@@ -35,20 +35,35 @@ import {
   deleteUser,
   getCurrentUser,
 } from "../data/User";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";
+import { findUser, createUser } from "../data/repository";
 
 function Profile(props) {
   const navigate = useNavigate();
   const user = getCurrentUser();
-  const [userName, setUserName] = useState(user.name);
-  const [userEmail, setUserEmail] = useState(user.email);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userJoinedOn, setUserJoinedOn] = useState("");
   const [alertName, setAlertName] = useState(false); //Visual cues on succesful name change
   const [alertEmail, setAlertEmail] = useState(false); //Visual cues on succesful email change
   const [isDeletingUser, setDeletingUser] = useState(false); //Whether a user is being deleted
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+
+  useEffect(() => {
+    async function loadUser() {
+      const currentUser = await findUser(user.email);
+      setUserName(currentUser.name);
+      setUserEmail(currentUser.email);
+      setUserJoinedOn(currentUser.createdAt);
+      setIsLoading(false);
+    }
+    loadUser();
+  }, []);
+
 
   function deleteAccount() {
     setDeletingUser(true);
@@ -62,6 +77,9 @@ function Profile(props) {
   return (
     <Box minH={"87vh"}>
       <Center p={20}>
+      {isLoading ?
+       <div>Loading</div>
+       :
         <Container maxW="sm" boxShadow={"2xl"} rounded={"lg"} borderWidth={1}>
           <Box pt={10} align={"center"}>
             <Avatar bg="teal.500" size={"2xl"} />
@@ -189,7 +207,7 @@ function Profile(props) {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
-                }).format(new Date(user.joinedOn))}
+                }).format(new Date(userJoinedOn))}
               </Text>
             </Box>
           </Stack>
@@ -244,6 +262,7 @@ function Profile(props) {
             </AlertDialog>
           </Box>
         </Container>
+        }
       </Center>
     </Box>
   );

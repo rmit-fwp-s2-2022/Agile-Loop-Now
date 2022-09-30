@@ -17,13 +17,20 @@ import FormField from "./FormField";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
 import { verifyUser } from "../data/repository";
 
-import { getUser } from "../data/User";
 import { generateCode, sendCode } from "../services/VerifyUser";
 import { setAuthentication } from "../data/User";
 import { useState } from "react";
 function Login(props) {
   const [alertOn, setAlertOn] = useState(false);
   const navigate = useNavigate();
+
+  const onSubmit = async (user) => {
+    const data = await verifyUser(user.email, user.password);
+    console.log("here");
+    console.log(data);
+    props.loginUser(data);
+    return data;
+  };
 
   return (
     <Box minH={"87vh"}>
@@ -61,12 +68,13 @@ function Login(props) {
           })}
           onSubmit={(values) => {
             setTimeout(() => {
+              // verifyUser()
               const code = generateCode();
-              const user = getUser(values.email);
-              props.verifyUser({ info: user, code: code });
-              sendCode(user.name, code);
-              setAuthentication(user, code);
-              navigate("/authenticate");
+              onSubmit(values).then((res) => {
+                sendCode(res.name, code);
+                setAuthentication(res, code);
+                navigate("/authenticate");
+              });
             }, 1500);
             //
           }}

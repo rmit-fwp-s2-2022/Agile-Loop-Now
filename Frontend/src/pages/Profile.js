@@ -38,7 +38,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, createUser } from "../data/repository";
+import { findUser, updateName } from "../data/repository";
 
 function Profile(props) {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ function Profile(props) {
       setIsLoading(false);
     }
     loadUser();
-  }, []);
+  });
 
 
   function deleteAccount() {
@@ -94,9 +94,11 @@ function Profile(props) {
               validationSchema={Yup.object({
                 name: Yup.string().required("Name cannot be empty"),
               })}
-              onSubmit={(value) => {
+              onSubmit={async (value) => {
                 if (userName !== value.name) {
                   editName(userEmail, value.name);
+                  await updateName(value.name, userEmail);
+                  // console.log(res);
                   setAlertName(true);
                   setUserName(value.name);
                   setTimeout(() => {

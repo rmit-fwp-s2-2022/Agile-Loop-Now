@@ -49,3 +49,9 @@ exports.create = async (req, res) => {
 
   res.json(user);
 };
+
+// Update user name in the database
+exports.updateName = async (req, res) => {
+  const user = await db.user.update({name: req.body.name}, {where: {email: req.params.id}});
+  res.json(user);
+}

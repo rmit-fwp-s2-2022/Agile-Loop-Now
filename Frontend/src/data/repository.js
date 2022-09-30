@@ -26,6 +26,12 @@ async function createUser(user) {
   return response.data;
 }
 
+async function updateName(name, email){
+  const response = await axios.put(API_HOST + `/api/users/updatename/${email}`, { "name" : name });
+  
+  return response.data;
+}
+
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
   const response = await axios.get(API_HOST + "/api/posts");
@@ -42,6 +48,6 @@ async function createPost(post) {
 
 export {
   verifyUser, findUser, createUser,
-  getPosts, createPost,
+  getPosts, createPost, updateName
 }
 

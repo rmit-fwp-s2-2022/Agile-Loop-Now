@@ -38,7 +38,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, updateName } from "../data/repository";
+import { findUser, updateName, updateEmail } from "../data/repository";
 
 function Profile(props) {
   const navigate = useNavigate();
@@ -148,11 +148,25 @@ function Profile(props) {
               validationSchema={Yup.object({
                 email: Yup.string()
                   .required("Email cannot be empty")
-                  .email("Email must be a valid Email"),
+                  .email("Email must be a valid Email")
+                  .test(
+                    "validateEmail",
+                    "This email is already in use",
+                    async function () {
+                      const user = await findUser(this.parent.email);
+                      if (user === null){
+                        return true;
+                      }
+                      else{
+                        return false;
+                      }
+                    }
+                  ),
               })}
-              onSubmit={(value) => {
+              onSubmit={async (value) => {
                 if (userEmail !== value.email) {
                   editEmail(userEmail, value.email);
+                  await updateEmail(userEmail, value.email);
                   setAlertEmail(true);
                   setUserEmail(value.email);
 

@@ -23,6 +23,9 @@ module.exports = (express, app) => {
   // Update user name.
   router.put("/updatename/:id", controller.updateName);
 
+  // Update user email.
+  router.put("/updateEmail/:id", controller.updateEmail);
+
   // Add routes to server.
   app.use("/api/users", router);
 };

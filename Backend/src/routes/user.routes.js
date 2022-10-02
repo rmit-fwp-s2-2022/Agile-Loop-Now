@@ -1,4 +1,4 @@
-//The code below is taken from Lectorial code archive week 8
+//The code below is taken from Lectorial code archive week 7
 //Writen by Shekhar Kalra
 
 module.exports = (express, app) => {
@@ -18,7 +18,7 @@ module.exports = (express, app) => {
   router.get("/login", controller.login);
 
   // Create a new user.
-  router.post("/", controller.create);
+  router.post("/create", controller.create);
 
   // Add routes to server.
   app.use("/api/users", router);

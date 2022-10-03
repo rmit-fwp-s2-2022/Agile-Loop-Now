@@ -60,12 +60,6 @@ function Forum(props) {
     const time = now.toLocaleTimeString();
     const timeStamp = date + " " + time;
 
-    // await axios.post(API, formData).then((response) => {
-    //   console.log(response);
-    //   console.log(response.data.secure_url);
-    //   setImageLink(response.data.secure_url);
-    // });
-
     if (image !== null) {
       const link = await axios.post(API, formData);
       console.log(link.data.secure_url);

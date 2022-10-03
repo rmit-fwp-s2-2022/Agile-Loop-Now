@@ -55,30 +55,34 @@ function getCurrentUser() {
 
 //Edit email of specific user
 function editEmail(currentEmail, newEmail) {
-  let userInfo = getUsers();
-  //Loop all users to find the specific user
-  for (let user of userInfo) {
-    if (user.email === currentEmail) {
-      user.email = newEmail;
-      sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user)); //Email changed in session storage as well
-      break;
-    }
-  }
+  let user = getCurrentUser();
+  user.email = newEmail;
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  // Loop all users to find the specific user
+  // for (let user of userInfo) {
+  //   if (user.email === currentEmail) {
+  //     user.email = newEmail;
+  //     sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user)); //Email changed in session storage as well
+  //     break;
+  //   }
+  // }
 
-  localStorage.setItem(USERS_KEY, JSON.stringify(userInfo)); //Update the new email on local storage
+  // localStorage.setItem(USERS_KEY, JSON.stringify(userInfo)); //Update the new email on local storage
 }
 
 //Edit name of specific user (same logic as editEmail)
 function editName(currentEmail, newName) {
-  let userInfo = getUsers();
-  for (let user of userInfo) {
-    if (user.email === currentEmail) {
-      user.name = newName;
-      sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-      break;
-    }
-  }
-  localStorage.setItem(USERS_KEY, JSON.stringify(userInfo));
+  let user = getCurrentUser();
+  user.name = newName;
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  // for (let user of userInfo) {
+  //   if (user.email === currentEmail) {
+  //     user.name = newName;
+  //     sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  //     break;
+  //   }
+  // }
+  // localStorage.setItem(USERS_KEY, JSON.stringify(userInfo));
 }
 
 //Log out the user by removing from session storage (Referenced from Week 3 Lecture code example 10)

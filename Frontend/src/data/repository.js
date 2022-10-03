@@ -38,6 +38,12 @@ async function updateEmail(email, newEmail){
   return response.data;
 }
 
+async function deleteUser(email){
+  const response = await axios.delete(API_HOST + `/api/users/delete/${email}`);
+
+  return response.data;
+}
+
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
   const response = await axios.get(API_HOST + "/api/posts");
@@ -55,6 +61,6 @@ async function createPost(post) {
 export {
   verifyUser, findUser, createUser,
   getPosts, createPost, updateName,
-  updateEmail
+  updateEmail, deleteUser
 }
 

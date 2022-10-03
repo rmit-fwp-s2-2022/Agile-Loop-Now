@@ -32,13 +32,12 @@ import * as Yup from "yup";
 import {
   editEmail,
   editName,
-  deleteUser,
   getCurrentUser,
 } from "../data/User";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, updateName, updateEmail } from "../data/repository";
+import { findUser, updateName, updateEmail, deleteUser } from "../data/repository";
 
 function Profile(props) {
   const navigate = useNavigate();
@@ -67,8 +66,9 @@ function Profile(props) {
 
   function deleteAccount() {
     setDeletingUser(true);
-    setTimeout(() => {
-      deleteUser(userEmail);
+    setTimeout(async () => {
+      // deleteUser(userEmail);
+      await deleteUser(userEmail);
       props.logout();
       navigate("/");
     }, 3000);

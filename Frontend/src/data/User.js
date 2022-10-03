@@ -72,15 +72,17 @@ function editEmail(currentEmail, newEmail) {
 
 //Edit name of specific user (same logic as editEmail)
 function editName(currentEmail, newName) {
-  let userInfo = getUsers();
-  for (let user of userInfo) {
-    if (user.email === currentEmail) {
-      user.name = newName;
-      sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-      break;
-    }
-  }
-  localStorage.setItem(USERS_KEY, JSON.stringify(userInfo));
+  let user = getCurrentUser();
+  user.name = newName;
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  // for (let user of userInfo) {
+  //   if (user.email === currentEmail) {
+  //     user.name = newName;
+  //     sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  //     break;
+  //   }
+  // }
+  // localStorage.setItem(USERS_KEY, JSON.stringify(userInfo));
 }
 
 //Log out the user by removing from session storage (Referenced from Week 3 Lecture code example 10)

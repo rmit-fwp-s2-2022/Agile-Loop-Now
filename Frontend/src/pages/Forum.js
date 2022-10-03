@@ -143,7 +143,6 @@ function Forum(props) {
             })}
             onSubmit={(value) => {
               onSubmit(value.txt);
-              console.log(value);
             }}
           >
             {(formik) => (

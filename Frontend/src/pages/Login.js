@@ -10,16 +10,27 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
+
 import { Formik } from "formik";
 import * as Yup from "yup";
 import FormField from "./FormField";
 import { Link as RouteLink, useNavigate } from "react-router-dom";
-import { getUser } from "../data/User";
+import { verifyUser } from "../data/repository";
+
 import { generateCode, sendCode } from "../services/VerifyUser";
 import { setAuthentication } from "../data/User";
-
+import { useState } from "react";
 function Login(props) {
+  const [alertOn, setAlertOn] = useState(false);
   const navigate = useNavigate();
+
+  const onSubmit = async (user) => {
+    const data = await verifyUser(user.email, user.password);
+    console.log("here");
+    console.log(data);
+    props.loginUser(data);
+    return data;
+  };
 
   return (
     <Box minH={"87vh"}>
@@ -39,11 +50,17 @@ function Login(props) {
                 "validateUser",
                 "Invalid Email or Password. Try Again",
                 //Check password and email of user
-                function () {
-                  const user = getUser(this.parent.email);
-                  if (user != null && user.password === this.parent.password) {
+                async function () {
+                  if (
+                    (await verifyUser(
+                      this.parent.email,
+                      this.parent.password
+                    )) !== null
+                  ) {
+                    setAlertOn(true);
                     return true;
                   } else {
+                    setAlertOn(false);
                     return false;
                   }
                 }
@@ -51,13 +68,15 @@ function Login(props) {
           })}
           onSubmit={(values) => {
             setTimeout(() => {
+              // verifyUser()
               const code = generateCode();
-              const user = getUser(values.email);
-              props.verifyUser({info: user, code: code});
-              sendCode(user.name, code);
-              setAuthentication(user, code);
-              navigate("/authenticate");
+              onSubmit(values).then((res) => {
+                sendCode(res.name, code);
+                setAuthentication(res, code);
+                navigate("/authenticate");
+              });
             }, 1500);
+            //
           }}
           validateOnChange={false}
           validateOnBlur={false}
@@ -94,7 +113,7 @@ function Login(props) {
                   <Stack spacing={4}>
                     <Alert
                       status="success"
-                      display={formik.isSubmitting ? "inherit" : "none"}
+                      display={alertOn ? "inherit" : "none"}
                     >
                       <AlertIcon />
                       Sending Verification Code!

@@ -8,9 +8,10 @@ const API_HOST = "http://localhost:4000";
 
 // --- User ---------------------------------------------------------------------------------------
 async function verifyUser(email, password) {
-  const response = await axios.get(API_HOST + "/api/users/login", { params: { email, password } });
+  const response = await axios.get(API_HOST + "/api/users/login", {
+    params: { email, password },
+  });
   const user = response.data;
-  
   return user;
 }
 
@@ -22,7 +23,6 @@ async function findUser(id) {
 
 async function createUser(user) {
   const response = await axios.post(API_HOST + "/api/users", user);
-
   return response.data;
 }
 
@@ -47,7 +47,6 @@ async function deleteUser(email){
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
   const response = await axios.get(API_HOST + "/api/posts");
-
   return response.data;
 }
 
@@ -56,7 +55,6 @@ async function createPost(post) {
 
   return response.data;
 }
-
 
 export {
   verifyUser, findUser, createUser,

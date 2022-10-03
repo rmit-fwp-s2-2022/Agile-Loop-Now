@@ -2,6 +2,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
+import Testing from "./pages/testing";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Forum from "./pages/Forum";
@@ -45,7 +46,8 @@ function App() {
             path="login"
             element={<Login loginUser={loginUser} verifyUser={verifyUser} />}
           />
-          <Route path="signup" element={<SignUp loginUser={loginUser}/>} />
+          <Route path="signup" element={<SignUp loginUser={loginUser} />} />
+          <Route path="testing" element={<Testing />} />
           <Route path="profile" element={<Profile logout={logoutUser} />} />
           <Route
             path="forum"

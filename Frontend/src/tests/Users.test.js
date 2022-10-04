@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import SignUp from "../pages/SignUp"
-import FormField from "../pages/SignUp"
-import { createUser, deleteUser, verifyUser } from "../data/repository";
+import { createUser, deleteUser } from "../data/repository";
 import {BrowserRouter as Router} from 'react-router-dom';
 
 const testUser = {
@@ -9,23 +8,17 @@ const testUser = {
     email: "testUser@email.com",
     password: "Password12#",
 };
-let container;
-
-// beforeAll(async () => {
-//     await createUser(testUser);
-// });
 
 afterAll(async () => {
     await deleteUser(testUser.email);
 });
 
 beforeEach(() => { 
-    const utils = render(
+    render(
         <Router>
             <SignUp />
         </Router>
     );
-    container = utils.container;
 });
 
 test("Create new user from Sign Up Page", async () => {
@@ -59,4 +52,3 @@ test("Create new user from Sign Up Page", async () => {
     })
     
 });
-

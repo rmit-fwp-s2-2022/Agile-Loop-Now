@@ -25,27 +25,33 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 
 import { DeleteIcon } from "@chakra-ui/icons";
-import React from "react";
-import {
-  getPosts,
-  createPost,
-  deletePost,
-  editPost,
-  editImage,
-} from "../data/Posts";
+import React, { useEffect, useRef } from "react";
+import { createPost, deletePost, editPost, editImage } from "../data/Posts";
+import { getPosts } from "../data/repository";
 import { Fade } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 function Forum(props) {
-  const hiddenFileInput = React.useRef(null);
+  const hiddenFileInput = useRef(null);
   const { isOpen, onToggle } = useDisclosure();
-  const [posts, setPosts] = useState(getPosts());
+  const [posts, setPosts] = useState([]);
   const [image, setImage] = useState(null);
   const [button, setButton] = useState(false);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
+
+  //Fetch all the posts made by all the users
+
+  useEffect(() => {
+    async function loadPosts() {
+      const postData = await getPosts();
+      console.log(postData);
+      setPosts(postData);
+    }
+    loadPosts();
+  }, [setPosts]);
 
   //This function calls an API from Cloundinary and stores the images uploaded from the user in the cloud
   //Cloundinary returns a link to the image
@@ -82,7 +88,7 @@ function Forum(props) {
     }
     onToggle();
     createPost(post);
-    setPosts(getPosts());
+    setPosts(null);
   };
 
   const reset = () => {
@@ -98,7 +104,7 @@ function Forum(props) {
   const onDelete = (time) => {
     console.log(time);
     deletePost(time);
-    setPosts(getPosts());
+    // setPosts(getPosts());
   };
 
   //This fucntion lets users upload their image to the staging area before being sent to Cloundinary
@@ -115,7 +121,7 @@ function Forum(props) {
     setButton(false);
     await editImage(image, timeStamp);
     console.log("newImage");
-    setPosts(getPosts());
+    // setPosts(getPosts());
   };
 
   return (
@@ -233,7 +239,7 @@ function Forum(props) {
                       <Avatar bg="teal.500" size={"md"} />
                     </Box>
                     <Box p={3}>
-                      <Heading size="sm">{post.user}</Heading>
+                      <Heading size="sm">{post.username}</Heading>
                       <Text color={"gray.500"} fontSize={"xs"}>
                         {" "}
                         Posted On {post.time}

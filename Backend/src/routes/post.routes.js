@@ -3,10 +3,10 @@ module.exports = (express, app) => {
   const router = express.Router();
 
   // Select all post.
-  router.get("/", controller.all);
+  router.get("/", controller.allPost);
 
   // Create post.
-  router.post("/create", controller.create);
+  router.post("/create", controller.createPost);
 
   app.use("/api/posts", router);
 };

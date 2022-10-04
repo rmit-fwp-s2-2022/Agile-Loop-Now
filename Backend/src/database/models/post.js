@@ -7,15 +7,15 @@ module.exports = (sequelize, DataTypes) =>
       primaryKey: true,
     },
     content: {
-      type: DataTypes.STRING(96),
+      type: DataTypes.STRING(225),
       allowNull: false,
     },
-    name: {
+    username: {
       type: DataTypes.STRING(80),
       allowNull: false,
     },
     link: {
-      type: DataTypes.STRING(96),
+      type: DataTypes.STRING(225),
       allowNull: false,
     },
     timeStamp: {

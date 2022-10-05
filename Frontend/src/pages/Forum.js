@@ -71,16 +71,14 @@ function Forum(props) {
       console.log(link.data.secure_url);
 
       post = {
-        user: props.user.name,
-        email: props.user.email,
+        userEmail: props.user.email,
         content: content,
         link: link.data.secure_url,
         time: timeStamp,
       };
     } else {
       post = {
-        user: props.user.name,
-        email: props.user.email,
+        userEmail: props.user.email,
         content: content,
         link: "",
         time: timeStamp,

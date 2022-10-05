@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import SignUp from "../pages/SignUp"
-import { createUser, deleteUser } from "../data/repository";
+import { createUser, deleteUser, findUser } from "../data/repository";
 import {BrowserRouter as Router} from 'react-router-dom';
 
 const testUser = {
@@ -9,7 +9,7 @@ const testUser = {
     password: "Password12#",
 };
 
-afterAll(async () => {
+afterEach(async () => {
     await deleteUser(testUser.email);
 });
 
@@ -52,3 +52,15 @@ test("Create new user from Sign Up Page", async () => {
     })
     
 });
+
+
+// test("Email already taken", async () => {
+    
+//     await createUser(testUser);
+
+//     const emailVal = screen.getByPlaceholderText("Enter your email address");
+//     fireEvent.change(emailVal, { target: { value: "test@mail.com" } });
+//     await expect(screen.getByText("An account with this email already exists")).toBeInTheDocument();
+   
+    
+// })

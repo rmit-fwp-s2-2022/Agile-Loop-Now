@@ -24,6 +24,9 @@ import axios from "axios";
 import * as Yup from "yup";
 import { Formik } from "formik";
 
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
 import { DeleteIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
 import { createPost, deletePost, editPost, editImage } from "../data/Posts";
@@ -169,12 +172,20 @@ function Forum(props) {
                 )}
 
                 <FormControl isInvalid={formik.errors.txt}>
-                  <Textarea
+                  {/* <Textarea
                     placeholder="What's on your mind?"
                     name="txt"
                     value={formik.values.txt}
                     onChange={formik.handleChange}
+                  /> */}
+                  <ReactQuill
+                    placeholder="What's on your mind?"
+                    theme="snow"
+                    name="txt"
+                    value={formik.values.txt}
+                    onChange={formik.handleChange}
                   />
+
                   <FormErrorMessage>{formik.errors.txt}</FormErrorMessage>
                 </FormControl>
 

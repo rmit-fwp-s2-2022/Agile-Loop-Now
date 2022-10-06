@@ -39,6 +39,15 @@ db.sync = async () => {
 async function seedData() {
   const count = await db.user.count();
 
+  // if (postNum > 0) return;
+
+  // await db.post.create({
+  //   userEmail: "test@mail.com",
+  //   content: "Here is a picture of a thing",
+  //   link: "https://res.cloudinary.com/aglie-loop/image/upload/v1664268665/my-uploads/hgvxdzyz80zuyh2blz9t.jpg",
+  //   timeStamp: "21 March 2022",
+  // });
+
   // Only seed data if necessary.
   if (count > 0) return;
 
@@ -56,6 +65,13 @@ async function seedData() {
     email: "shekhar@mail.com",
     password_hash: hash,
     name: "Shekhar",
+  });
+
+  hash = await argon2.hash("Password12#", { type: argon2.argon2id });
+  await db.user.create({
+    email: "test@mail.com",
+    password_hash: hash,
+    name: "test",
   });
 }
 

@@ -17,6 +17,7 @@ import {
   EditableTextarea,
   FormControl,
   FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
 import EditableControls from "./EditableControls";
 import axios from "axios";
@@ -37,9 +38,12 @@ import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 function Forum(props) {
+  const toast = useToast();
   const hiddenFileInput = useRef(null);
   const { isOpen, onToggle } = useDisclosure();
-  const [posts, setPosts] = useState([]);
+  const [content, setContent] = useState(""); // Used to set react quill input
+  const [editContent, setEditContent] = useState("");
+  const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [image, setImage] = useState(null);
   const [button, setButton] = useState(false);
 
@@ -56,9 +60,10 @@ function Forum(props) {
     loadPosts();
   }, [setPosts]);
 
+  const onEdit = () => {};
   //This function calls an API from Cloundinary and stores the images uploaded from the user in the cloud
   //Cloundinary returns a link to the image
-  const onSubmit = async (content) => {
+  const onSubmit = async () => {
     let post = {};
     const formData = new FormData();
 
@@ -69,6 +74,26 @@ function Forum(props) {
     const time = now.toLocaleTimeString();
     const timeStamp = date + " " + time;
 
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+      toast({
+        title: "Error",
+        description: "Field must not be blank.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (content.length > 600) {
+      toast({
+        title: "Error",
+        description: "Write less words.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     if (image !== null) {
       const link = await axios.post(API, formData);
       console.log(link.data.secure_url);
@@ -94,6 +119,7 @@ function Forum(props) {
 
   const reset = () => {
     setImage(null);
+    setContent(null);
   };
 
   //Helper function for detecting image upload changes
@@ -135,195 +161,152 @@ function Forum(props) {
         </Box>
 
         <Collapse in={isOpen} animateOpacity>
-          <Formik
-            initialValues={{ txt: "" }}
-            validationSchema={Yup.object({
-              txt: Yup.string()
-                .required("Must contain text")
-                .max(250, "Write less please"),
-            })}
-            onSubmit={(value) => {
-              onSubmit(value.txt);
-            }}
-          >
-            {(formik) => (
-              <Box p={4} rounded={"lg"} borderWidth={1}>
-                <Flex>
-                  <Box pt={2} pb={2}>
-                    <Avatar bg="teal.500" size={"md"} />
-                  </Box>
-                  <Box>
-                    <Heading size="sm" mt={2} p={3}>
-                      {props.user.name}
-                    </Heading>
-                  </Box>
-                </Flex>
-                {image !== null && (
+          <Box p={4} rounded={"lg"} borderWidth={1}>
+            <Flex>
+              <Box pt={2} pb={2}>
+                <Avatar bg="teal.500" size={"md"} />
+              </Box>
+              <Box>
+                <Heading size="sm" mt={2} p={3}>
+                  {props.user.name}
+                </Heading>
+              </Box>
+            </Flex>
+            {image !== null && (
+              <>
+                <div className="image-preview">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="preview"
+                    height={200}
+                    width={400}
+                  />
+                </div>
+              </>
+            )}
+
+            <ReactQuill
+              placeholder="What's on your mind?"
+              theme="snow"
+              name="txt"
+              value={content}
+              onChange={setContent}
+            />
+
+            <Flex mt={3}>
+              <IconButton
+                type={"file"}
+                size={"sm"}
+                colorScheme="orange"
+                icon={<FontAwesomeIcon size="2xl" icon={faImage} type="file" />}
+                onClick={onPressed}
+              />
+              <input
+                id="selector"
+                type="file"
+                style={{ display: "none" }}
+                ref={hiddenFileInput}
+                accept="image/*"
+                onChange={(e) => uploadFile(e.target.files)}
+              />
+              <Spacer />
+              <ButtonGroup>
+                <Button colorScheme="teal" onClick={onSubmit}>
+                  Post
+                </Button>
+                <Button
+                  onClick={(e) => {
+                    reset();
+                  }}
+                >
+                  Reset
+                </Button>
+              </ButtonGroup>
+            </Flex>
+          </Box>
+        </Collapse>
+
+        {/*map goes here*/}
+        {posts !== null &&
+          posts.map((post) => (
+            <Box p={4} rounded={"lg"} borderWidth={1} mt={3}>
+              <Flex>
+                <Box pt={2} pb={2}>
+                  <Avatar bg="teal.500" size={"md"} />
+                </Box>
+                <Box p={3}>
+                  <Heading size="sm">{post.username}</Heading>
+                  <Text color={"gray.500"} fontSize={"xs"}>
+                    {" "}
+                    Posted On {post.timeStamp}
+                  </Text>
+                </Box>
+              </Flex>
+              <Editable
+                value={post.content}
+                isPreviewFocusable={false}
+                onSubmit={onEdit}
+              >
+                <EditablePreview />
+                <ReactQuill
+                  placeholder="What's on your mind?"
+                  theme="snow"
+                  name="txt"
+                  value={post.content}
+                  onChange={setEditContent}
+                />
+                <Spacer />
+                {post.link !== "" ? (
                   <>
                     <div className="image-preview">
                       <img
-                        src={URL.createObjectURL(image)}
+                        src={post.link}
                         alt="preview"
                         height={200}
                         width={400}
                       />
                     </div>
                   </>
+                ) : (
+                  <></>
                 )}
-
-                <FormControl isInvalid={formik.errors.txt}>
-                  {/* <Textarea
-                    placeholder="What's on your mind?"
-                    name="txt"
-                    value={formik.values.txt}
-                    onChange={formik.handleChange}
-                  /> */}
-                  <ReactQuill
-                    placeholder="What's on your mind?"
-                    theme="snow"
-                    name="txt"
-                    value={formik.values.txt}
-                    onChange={formik.handleChange}
-                  />
-
-                  <FormErrorMessage>{formik.errors.txt}</FormErrorMessage>
-                </FormControl>
-
-                <Flex mt={3}>
-                  <IconButton
-                    type={"file"}
-                    size={"sm"}
-                    colorScheme="orange"
-                    icon={
-                      <FontAwesomeIcon size="2xl" icon={faImage} type="file" />
-                    }
-                    onClick={onPressed}
-                  />
-                  <input
-                    id="selector"
-                    type="file"
-                    style={{ display: "none" }}
-                    ref={hiddenFileInput}
-                    accept="image/*"
-                    onChange={(e) => uploadFile(e.target.files)}
-                  />
-                  <Spacer />
-                  <ButtonGroup>
-                    <Button colorScheme="teal" onClick={formik.handleSubmit}>
-                      Post
-                    </Button>
-                    <Button
-                      onClick={(e) => {
-                        formik.handleReset();
-                        reset();
-                      }}
+                {props.user.email === post.email && (
+                  <Flex mt={3}>
+                    <IconButton
+                      size={"sm"}
+                      colorScheme="orange"
+                      icon={<FontAwesomeIcon size="2xl" icon={faImage} />}
+                      onClick={onPressed}
                     >
-                      Reset
-                    </Button>
-                  </ButtonGroup>
-                </Flex>
-              </Box>
-            )}
-          </Formik>
-        </Collapse>
-
-        {/*map goes here*/}
-        {posts !== null &&
-          posts.map((post) => (
-            <Formik
-              initialValues={{ txt: post.content }}
-              validationSchema={Yup.object({
-                txt: Yup.string()
-                  .required("Must contain text")
-                  .max(250, "Write less please"),
-              })}
-              onSubmit={(value) => {
-                editPost(post.time, value.txt);
-              }}
-            >
-              {(formik) => (
-                <Box p={4} rounded={"lg"} borderWidth={1} mt={3}>
-                  <Flex>
-                    <Box pt={2} pb={2}>
-                      <Avatar bg="teal.500" size={"md"} />
-                    </Box>
-                    <Box p={3}>
-                      <Heading size="sm">{post.username}</Heading>
-                      <Text color={"gray.500"} fontSize={"xs"}>
-                        {" "}
-                        Posted On {post.time}
-                      </Text>
-                    </Box>
-                  </Flex>
-
-                  <FormControl isInvalid={formik.errors.txt}>
-                    <Editable
-                      value={formik.values.txt}
-                      isPreviewFocusable={false}
-                      onSubmit={formik.handleSubmit}
-                    >
-                      <EditablePreview />
-                      <Textarea
-                        name="txt"
-                        as={EditableTextarea}
-                        onChange={formik.handleChange}
+                      <input
+                        id="clicker"
+                        type="file"
+                        style={{ display: "none" }}
+                        ref={hiddenFileInput}
+                        accept="image/*"
+                        onChange={(e) => uploadFile(e.target.files)}
                       />
-                      <Spacer />
-                      {post.link !== "" ? (
-                        <>
-                          <div className="image-preview">
-                            <img
-                              src={post.link}
-                              alt="preview"
-                              height={200}
-                              width={400}
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                      <FormErrorMessage>{formik.errors.txt}</FormErrorMessage>
-                      {props.user.email === post.email && (
-                        <Flex mt={3}>
-                          <IconButton
-                            size={"sm"}
-                            colorScheme="orange"
-                            icon={<FontAwesomeIcon size="2xl" icon={faImage} />}
-                            onClick={onPressed}
-                          >
-                            <input
-                              id="clicker"
-                              type="file"
-                              style={{ display: "none" }}
-                              ref={hiddenFileInput}
-                              accept="image/*"
-                              onChange={(e) => uploadFile(e.target.files)}
-                            />
-                          </IconButton>
+                    </IconButton>
 
-                          <Spacer />
+                    <Spacer />
 
-                          <Fade in={button}>
-                            <Button mr={4} onClick={() => newImage(post.time)}>
-                              Save
-                            </Button>
-                          </Fade>
-                          <IconButton
-                            mr={4}
-                            size={"sm"}
-                            colorScheme="red"
-                            icon={<DeleteIcon />}
-                            onClick={() => onDelete(post.time)}
-                          ></IconButton>
-                          <EditableControls />
-                        </Flex>
-                      )}
-                    </Editable>
-                  </FormControl>
-                </Box>
-              )}
-            </Formik>
+                    <Fade in={button}>
+                      <Button mr={4} onClick={() => newImage(post.time)}>
+                        Save
+                      </Button>
+                    </Fade>
+                    <IconButton
+                      mr={4}
+                      size={"sm"}
+                      colorScheme="red"
+                      icon={<DeleteIcon />}
+                      onClick={() => onDelete(post.time)}
+                    ></IconButton>
+                    <EditableControls />
+                  </Flex>
+                )}
+              </Editable>
+            </Box>
           ))}
       </Container>
     </Box>

@@ -13,7 +13,7 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import FormField from "./FormField";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, generatePath } from "react-router-dom";
 import { useState } from "react";
 import { generateCode, sendCode } from "../services/VerifyUser";
 import {getAuthentication, setAuthentication } from "../data/User";
@@ -56,7 +56,7 @@ function Authentication(props){
               onSubmit={() => {
                 setTimeout(() => {
                   props.loginUser(user);
-                  navigate("/profile");
+                  navigate(generatePath("/profile/:id", { id:user.email }));
                 }, 1500);
               }}
               validateOnChange={false}

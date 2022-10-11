@@ -26,7 +26,9 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Progress,
-  Flex
+  Flex,
+  Heading,
+  Grid
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -36,13 +38,15 @@ import {
   getCurrentUser,
 } from "../data/User";
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
 import { findUser, updateName, updateEmail, deleteUser } from "../data/repository";
 import UserDisplay from "./UserDisplay";
 import Comment from "./Comment";
 
 function Profile(props) {
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const user = getCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
@@ -55,9 +59,12 @@ function Profile(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
+  const post = [{"name": "New user", "email": "mail@mail.com", "id":1, "content":"yooooo"}, {"name": "New user", "email": "mail@mail.com", "id":2}, {"name": "New user", "email": "mail@mail.com", "id":3}]
+  const follows = [{"name": "New user", "email": "mail@mail.com", "id":1},
+  {"name": "New user", "email": "mail@mail.com", "id":2}]
   useEffect(() => {
     async function loadUser() {
-      const currentUser = await findUser(user.email);
+      const currentUser = await findUser(id);
       setUserName(currentUser.name);
       setUserEmail(currentUser.email);
       setUserJoinedOn(currentUser.createdAt);
@@ -78,7 +85,7 @@ function Profile(props) {
   }
 
   return (
-    <Box>
+    <Box pl={20}>
       <Flex>
       <Center p={20}  minW='500px'>
       {isLoading ?
@@ -284,8 +291,21 @@ function Profile(props) {
         </Container>
         }
       </Center>
-      <Comment></Comment>
-      <UserDisplay></UserDisplay>
+        <Stack minW='40%' pt={70}>
+          <Box >
+              <Heading>Comments</Heading>
+          </Box>
+          {post.map(post => (<Comment key={post.id} name={post.name} content={post.content}/>))}
+        </Stack>
+        <Stack pt={70} pl={70}>
+          <Heading size="md" ml={3}>Following</Heading>
+          <Grid templateColumns='repeat(3, 1fr)' gap={3}>
+            {follows.map(follows => (
+            <UserDisplay key={follows.id} name={follows.name} email={follows.email}/>
+            ))}
+            
+          </Grid>
+        </Stack>
       </Flex>
     </Box>
   );

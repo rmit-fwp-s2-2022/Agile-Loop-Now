@@ -26,6 +26,24 @@ async function createUser(user) {
   return response.data;
 }
 
+async function updateName(name, email){
+  const response = await axios.put(API_HOST + `/api/users/updatename/${email}`, { "name" : name });
+  
+  return response.data;
+}
+
+async function updateEmail(email, newEmail){
+  const response = await axios.put(API_HOST + `/api/users/updateEmail/${email}`, { "newEmail" : newEmail });
+
+  return response.data;
+}
+
+async function deleteUser(email){
+  const response = await axios.delete(API_HOST + `/api/users/delete/${email}`);
+
+  return response.data;
+}
+
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
   const response = await axios.get(API_HOST + "/api/posts");
@@ -38,4 +56,9 @@ async function createPost(post) {
   return response.data;
 }
 
-export { verifyUser, findUser, createUser, getPosts, createPost };
+export {
+  verifyUser, findUser, createUser,
+  getPosts, createPost, updateName,
+  updateEmail, deleteUser
+}
+

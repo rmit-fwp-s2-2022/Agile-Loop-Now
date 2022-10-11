@@ -55,7 +55,7 @@ function Authentication(props){
               //Login user on submit
               onSubmit={() => {
                 setTimeout(() => {
-                  props.loginUser(user.email);
+                  props.loginUser(user);
                   navigate("/profile");
                 }, 1500);
               }}

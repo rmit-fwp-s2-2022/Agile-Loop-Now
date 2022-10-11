@@ -2,24 +2,21 @@ import {
   Box,
   Container,
   Flex,
+  IconButton,
+  ButtonGroup,
+  useEditableControls,
   Avatar,
   Heading,
-  Textarea,
-  IconButton,
   Button,
   Spacer,
-  ButtonGroup,
   useDisclosure,
   Collapse,
   Text,
   Editable,
   EditablePreview,
-  EditableTextarea,
-  FormControl,
-  FormErrorMessage,
   useToast,
 } from "@chakra-ui/react";
-import EditableControls from "./EditableControls";
+
 import axios from "axios";
 
 import * as Yup from "yup";
@@ -28,7 +25,7 @@ import { Formik } from "formik";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
 import { createPost, deletePost, editPost, editImage } from "../data/Posts";
 import { getPosts } from "../data/repository";
@@ -45,11 +42,10 @@ function Forum(props) {
   const [editContent, setEditContent] = useState("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [image, setImage] = useState(null);
+  const [editing, setEditing] = useState(false);
   const [button, setButton] = useState(false);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
-
-  //Fetch all the posts made by all the users
 
   useEffect(() => {
     async function loadPosts() {
@@ -60,7 +56,31 @@ function Forum(props) {
     loadPosts();
   }, [setPosts]);
 
-  const onEdit = () => {};
+  function EditableControls() {
+    const {
+      isEditing,
+      getSubmitButtonProps,
+      getCancelButtonProps,
+      getEditButtonProps,
+    } = useEditableControls();
+
+    setEditing(isEditing);
+    return isEditing ? (
+      <ButtonGroup justifyContent="center" size="sm">
+        <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
+        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
+      </ButtonGroup>
+    ) : (
+      <Flex justifyContent="center">
+        <IconButton size="sm" icon={<EditIcon />} {...getEditButtonProps()} />
+      </Flex>
+    );
+  }
+  //Fetch all the posts made by all the users
+
+  const onEdit = async () => {
+    let post = {};
+  };
   //This function calls an API from Cloundinary and stores the images uploaded from the user in the cloud
   //Cloundinary returns a link to the image
   const onSubmit = async () => {
@@ -69,10 +89,6 @@ function Forum(props) {
 
     formData.append("file", image);
     formData.append("upload_preset", "my-uploads");
-    const now = new Date();
-    const date = now.toLocaleDateString();
-    const time = now.toLocaleTimeString();
-    const timeStamp = date + " " + time;
 
     if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
       toast({
@@ -102,14 +118,12 @@ function Forum(props) {
         userEmail: props.user.email,
         content: content,
         link: link.data.secure_url,
-        time: timeStamp,
       };
     } else {
       post = {
         userEmail: props.user.email,
         content: content,
         link: "",
-        time: timeStamp,
       };
     }
     onToggle();
@@ -229,7 +243,7 @@ function Forum(props) {
         {/*map goes here*/}
         {posts !== null &&
           posts.map((post) => (
-            <Box p={4} rounded={"lg"} borderWidth={1} mt={3}>
+            <Box key={post.post_id} p={4} rounded={"lg"} borderWidth={1} mt={3}>
               <Flex>
                 <Box pt={2} pb={2}>
                   <Avatar bg="teal.500" size={"md"} />
@@ -251,16 +265,19 @@ function Forum(props) {
               <Editable
                 value={post.content}
                 isPreviewFocusable={false}
-                onSubmit={onEdit}
+                onSubmit={() => {
+                  onEdit(post.post_id);
+                }}
               >
                 <EditablePreview />
-                <ReactQuill
-                  placeholder="What's on your mind?"
-                  theme="snow"
-                  name="txt"
-                  value={post.content}
-                  onChange={setEditContent}
-                />
+                {editing && (
+                  <ReactQuill
+                    theme="snow"
+                    name="txt"
+                    defaultValue={post.content}
+                    onChange={setEditContent}
+                  />
+                )}
                 <Spacer />
                 {post.link !== "" ? (
                   <>

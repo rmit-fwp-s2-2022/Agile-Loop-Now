@@ -26,6 +26,7 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Progress,
+  Flex
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -38,6 +39,8 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";
 import { findUser, updateName, updateEmail, deleteUser } from "../data/repository";
+import UserDisplay from "./UserDisplay";
+import Comment from "./Comment";
 
 function Profile(props) {
   const navigate = useNavigate();
@@ -75,12 +78,13 @@ function Profile(props) {
   }
 
   return (
-    <Box minH={"87vh"}>
-      <Center p={20}>
+    <Box>
+      <Flex>
+      <Center p={20}  minW='500px'>
       {isLoading ?
        <div>Loading</div>
        :
-        <Container maxW="sm" boxShadow={"2xl"} rounded={"lg"} borderWidth={1}>
+        <Container maxW="sm"  rounded={"lg"} borderWidth={1}>
           <Box pt={10} align={"center"}>
             <Avatar bg="teal.500" size={"2xl"} />
           </Box>
@@ -280,6 +284,9 @@ function Profile(props) {
         </Container>
         }
       </Center>
+      <Comment></Comment>
+      <UserDisplay></UserDisplay>
+      </Flex>
     </Box>
   );
 }

@@ -238,7 +238,13 @@ function Forum(props) {
                   <Heading size="sm">{post.username}</Heading>
                   <Text color={"gray.500"} fontSize={"xs"}>
                     {" "}
-                    Posted On {post.timeStamp}
+                    Posted On{" "}
+                    {Intl.DateTimeFormat("en-GB", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }).format(new Date(post.createdAt))}
                   </Text>
                 </Box>
               </Flex>
@@ -249,7 +255,6 @@ function Forum(props) {
               >
                 <EditablePreview />
                 <ReactQuill
-                  as={EditableInput}
                   placeholder="What's on your mind?"
                   theme="snow"
                   name="txt"

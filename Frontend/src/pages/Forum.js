@@ -249,6 +249,7 @@ function Forum(props) {
               >
                 <EditablePreview />
                 <ReactQuill
+                  as={EditableInput}
                   placeholder="What's on your mind?"
                   theme="snow"
                   name="txt"

@@ -27,8 +27,8 @@ import "react-quill/dist/quill.snow.css";
 
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
-import { createPost, deletePost, editPost, editImage } from "../data/Posts";
-import { getPosts } from "../data/repository";
+import { deletePost, editPost, editImage } from "../data/Posts";
+import { getPosts, createPost } from "../data/repository";
 import { Fade } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
@@ -127,8 +127,9 @@ function Forum(props) {
       };
     }
     onToggle();
+    console.log("here");
     createPost(post);
-    setPosts(null);
+    setPosts([...posts, post]);
   };
 
   const reset = () => {
@@ -162,7 +163,6 @@ function Forum(props) {
     setButton(false);
     await editImage(image, timeStamp);
     console.log("newImage");
-    // setPosts(getPosts());
   };
 
   return (
@@ -293,7 +293,7 @@ function Forum(props) {
                 ) : (
                   <></>
                 )}
-                {props.user.email === post.email && (
+                {props.user.email === post.userEmail && (
                   <Flex mt={3}>
                     <IconButton
                       size={"sm"}
@@ -310,9 +310,7 @@ function Forum(props) {
                         onChange={(e) => uploadFile(e.target.files)}
                       />
                     </IconButton>
-
                     <Spacer />
-
                     <Fade in={button}>
                       <Button mr={4} onClick={() => newImage(post.time)}>
                         Save

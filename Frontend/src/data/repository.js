@@ -26,19 +26,25 @@ async function createUser(user) {
   return response.data;
 }
 
-async function updateName(name, email){
-  const response = await axios.put(API_HOST + `/api/users/updatename/${email}`, { "name" : name });
-  
-  return response.data;
-}
-
-async function updateEmail(email, newEmail){
-  const response = await axios.put(API_HOST + `/api/users/updateEmail/${email}`, { "newEmail" : newEmail });
+async function updateName(name, email) {
+  const response = await axios.put(
+    API_HOST + `/api/users/updatename/${email}`,
+    { name: name }
+  );
 
   return response.data;
 }
 
-async function deleteUser(email){
+async function updateEmail(email, newEmail) {
+  const response = await axios.put(
+    API_HOST + `/api/users/updateEmail/${email}`,
+    { newEmail: newEmail }
+  );
+
+  return response.data;
+}
+
+async function deleteUser(email) {
   const response = await axios.delete(API_HOST + `/api/users/delete/${email}`);
 
   return response.data;
@@ -51,14 +57,17 @@ async function getPosts() {
 }
 
 async function createPost(post) {
-  const response = await axios.post(API_HOST + "/api/posts", post);
-
+  const response = await axios.post(API_HOST + "/api/posts/create", post);
   return response.data;
 }
 
 export {
-  verifyUser, findUser, createUser,
-  getPosts, createPost, updateName,
-  updateEmail, deleteUser
-}
-
+  verifyUser,
+  findUser,
+  createUser,
+  getPosts,
+  createPost,
+  updateName,
+  updateEmail,
+  deleteUser,
+};

@@ -56,6 +56,23 @@ async function createPost(post) {
   return response.data;
 }
 
+
+// --- Follow ---------------------------------------------------------------------------------------
+async function getUserFollows(user) {
+  const response = await axios.get(API_HOST + `/api/follows/getUser/${user}`);
+  return response.data;
+}
+
+async function createFollow(follow) {
+  const response = await axios.post(API_HOST + "/api/follows/follow", follow);
+  return response.data;
+}
+
+async function deleteFollow(id){
+  const response = await axios.delete(API_HOST + `/api/follows/unfollow/${id}`);
+  return response.data;
+}
+
 export {
   verifyUser, findUser, createUser,
   getPosts, createPost, updateName,

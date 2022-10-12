@@ -128,8 +128,8 @@ function Forum(props) {
     }
     onToggle();
     console.log("here");
-    createPost(post);
-    setPosts([...posts, post]);
+    const newPost = await createPost(post);
+    setPosts([...posts, newPost]);
   };
 
   const reset = () => {
@@ -263,12 +263,13 @@ function Forum(props) {
                 </Box>
               </Flex>
               <Editable
-                value={post.content}
                 isPreviewFocusable={false}
                 onSubmit={() => {
                   onEdit(post.post_id);
                 }}
               >
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+
                 <EditablePreview />
                 {editing && (
                   <ReactQuill
@@ -278,6 +279,7 @@ function Forum(props) {
                     onChange={setEditContent}
                   />
                 )}
+
                 <Spacer />
                 {post.link !== "" ? (
                   <>

@@ -17,7 +17,11 @@ async function verifyUser(email, password) {
 
 async function findUser(id) {
   const response = await axios.get(API_HOST + `/api/users/select/${id}`);
+  return response.data;
+}
 
+async function findUserName(email) {
+  const response = await axios.get(API_HOST + `/api/users/select/${email}`);
   return response.data;
 }
 
@@ -52,8 +56,18 @@ async function deleteUser(email) {
 
 // --- Post ---------------------------------------------------------------------------------------
 async function getPosts() {
-  const response = await axios.get(API_HOST + "/api/posts");
-  return response.data;
+  const posts = await axios.get(API_HOST + "/api/posts");
+  const users = await axios.get(API_HOST + "/api/users");
+
+  console.log(users.data);
+  for (let i = 0; i < posts.data.length; i++) {
+    for (let j = 0; j < users.data.length; j++) {
+      if (users.data[j].email === posts.data[i].userEmail) {
+        posts.data[i].name = users.data[j].name;
+      }
+    }
+  }
+  return posts.data;
 }
 
 async function createPost(post) {

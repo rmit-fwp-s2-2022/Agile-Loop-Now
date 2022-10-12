@@ -146,7 +146,6 @@ function Forum(props) {
   const onDelete = (time) => {
     console.log(time);
     deletePost(time);
-    // setPosts(getPosts());
   };
 
   //This fucntion lets users upload their image to the staging area before being sent to Cloundinary
@@ -249,7 +248,7 @@ function Forum(props) {
                   <Avatar bg="teal.500" size={"md"} />
                 </Box>
                 <Box p={3}>
-                  <Heading size="sm">{post.username}</Heading>
+                  <Heading size="sm">{post.name}</Heading>
                   <Text color={"gray.500"} fontSize={"xs"}>
                     {" "}
                     Posted On{" "}

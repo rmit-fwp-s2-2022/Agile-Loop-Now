@@ -130,6 +130,7 @@ function Forum(props) {
     console.log("here");
     const newPost = await createPost(post);
     setPosts([...posts, newPost]);
+    reset();
   };
 
   const reset = () => {
@@ -313,7 +314,7 @@ function Forum(props) {
                     </IconButton>
                     <Spacer />
                     <Fade in={button}>
-                      <Button mr={4} onClick={() => newImage(post.time)}>
+                      <Button mr={4} onClick={() => newImage(post.id)}>
                         Save
                       </Button>
                     </Fade>
@@ -322,7 +323,7 @@ function Forum(props) {
                       size={"sm"}
                       colorScheme="red"
                       icon={<DeleteIcon />}
-                      onClick={() => onDelete(post.time)}
+                      onClick={() => onDelete(post.post_id)}
                     ></IconButton>
                     <EditableControls />
                   </Flex>

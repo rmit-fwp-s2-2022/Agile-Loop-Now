@@ -14,3 +14,8 @@ exports.createPost = async (req, res) => {
   });
   res.json(post);
 };
+
+exports.deletePost = async (req, res) => {
+  const user = await db.post.destroy({ where: { post_id: req.params.id } });
+  res.json(user);
+};

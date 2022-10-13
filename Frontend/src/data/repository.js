@@ -75,12 +75,18 @@ async function createPost(post) {
   return response.data;
 }
 
+async function deletePost(id) {
+  const response = await axios.delete(API_HOST + `/api/posts/delete/${id}`);
+  return response.data;
+}
+
 export {
   verifyUser,
   findUser,
   createUser,
   getPosts,
   createPost,
+  deletePost,
   updateName,
   updateEmail,
   deleteUser,

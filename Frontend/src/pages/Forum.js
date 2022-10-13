@@ -27,8 +27,8 @@ import "react-quill/dist/quill.snow.css";
 
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
-import { deletePost, editPost, editImage } from "../data/Posts";
-import { getPosts, createPost } from "../data/repository";
+import { editPost, editImage } from "../data/Posts";
+import { getPosts, createPost, deletePost } from "../data/repository";
 import { Fade } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
@@ -127,7 +127,6 @@ function Forum(props) {
       };
     }
     onToggle();
-    console.log("here");
     const newPost = await createPost(post);
     setPosts([...posts, newPost]);
     reset();
@@ -144,9 +143,10 @@ function Forum(props) {
   };
 
   //Simple function that deletes the specified post
-  const onDelete = (time) => {
-    console.log(time);
-    deletePost(time);
+  const onDelete = async (id) => {
+    await deletePost(id);
+    const getNewPosts = await getPosts();
+    setPosts(getNewPosts);
   };
 
   //This fucntion lets users upload their image to the staging area before being sent to Cloundinary
@@ -162,7 +162,6 @@ function Forum(props) {
   const newImage = async (timeStamp) => {
     setButton(false);
     await editImage(image, timeStamp);
-    console.log("newImage");
   };
 
   return (

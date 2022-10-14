@@ -27,3 +27,11 @@ exports.updatePost = async (req, res) => {
   );
   res.json(post);
 };
+
+exports.updatePostContent = async (req, res) => {
+  const post = await db.post.update(
+    { content: req.body.content },
+    { where: { post_id: req.params.id } }
+  );
+  res.json(post);
+};

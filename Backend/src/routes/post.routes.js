@@ -10,6 +10,8 @@ module.exports = (express, app) => {
 
   router.put("/update/:id", controller.updatePost);
 
+  router.put("/updateContent/:id", controller.updatePostContent);
+
   router.delete("/delete/:id", controller.deletePost);
 
   app.use("/api/posts", router);

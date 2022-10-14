@@ -4,7 +4,6 @@ import {
   Flex,
   IconButton,
   ButtonGroup,
-  useEditableControls,
   Avatar,
   Heading,
   Button,
@@ -13,23 +12,24 @@ import {
   Collapse,
   Text,
   Editable,
-  EditablePreview,
   useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 
 import axios from "axios";
-
-import * as Yup from "yup";
-import { Formik } from "formik";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
-import { editPost, editImage } from "../data/Posts";
-import { getPosts, createPost, deletePost } from "../data/repository";
-import { Fade } from "@chakra-ui/react";
+import { getPosts, createPost, deletePost, editPost } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -38,49 +38,133 @@ function Forum(props) {
   const toast = useToast();
   const hiddenFileInput = useRef(null);
   const { isOpen, onToggle } = useDisclosure();
+  const {
+    isOpen: isOpenModal,
+    onOpen: onOpenModal,
+    onClose: onCloseModal,
+  } = useDisclosure();
   const [content, setContent] = useState(""); // Used to set react quill input
-  const [editContent, setEditContent] = useState("");
+  const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [image, setImage] = useState(null);
-  const [editing, setEditing] = useState(false);
-  const [button, setButton] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  // const [button, setButton] = useState(false);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
   useEffect(() => {
     async function loadPosts() {
       const postData = await getPosts();
-      console.log(postData);
       setPosts(postData);
     }
     loadPosts();
   }, [setPosts]);
 
-  function EditableControls() {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls();
+  function ModalComponent() {
+    return (
+      <>
+        <Modal
+          closeOnOverlayClick={false}
+          isOpen={isOpenModal}
+          onClose={onCloseModal}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Edit</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <ReactQuill
+                theme="snow"
+                name="txt"
+                defaultValue={selectedPost.content}
+                onChange={(value) => {
+                  editContent.current = value;
+                }}
+              />
+            </ModalBody>
 
-    setEditing(isEditing);
-    return isEditing ? (
-      <ButtonGroup justifyContent="center" size="sm">
-        <IconButton icon={<CheckIcon />} {...getSubmitButtonProps()} />
-        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} />
-      </ButtonGroup>
-    ) : (
-      <Flex justifyContent="center">
-        <IconButton size="sm" icon={<EditIcon />} {...getEditButtonProps()} />
-      </Flex>
+            <ModalFooter>
+              <IconButton
+                size={"sm"}
+                colorScheme="orange"
+                icon={<FontAwesomeIcon size="2xl" icon={faImage} />}
+                onClick={onPressed}
+              >
+                <input
+                  id="clicker"
+                  type="file"
+                  style={{ display: "none" }}
+                  ref={hiddenFileInput}
+                  accept="image/*"
+                  onChange={(e) => uploadFile(e.target.files)}
+                />
+              </IconButton>
+              <Spacer />
+              <ButtonGroup justifyContent="center" size="sm">
+                <IconButton
+                  icon={<CheckIcon />}
+                  onClick={() => {
+                    onEdit(selectedPost.post_id);
+                  }}
+                />
+                <IconButton icon={<CloseIcon />} onClick={onCloseModal} />
+              </ButtonGroup>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
     );
   }
+
   //Fetch all the posts made by all the users
 
-  const onEdit = async () => {
+  const onEdit = async (id) => {
     let post = {};
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "my-uploads");
+
+    if (editContent.current.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+      toast({
+        title: "Error",
+        description: "Field must not be blank.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (editContent.current.length > 600) {
+      toast({
+        title: "Error",
+        description: "Write less words.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (image !== null) {
+      const link = await axios.post(API, formData);
+      console.log(link.data.secure_url);
+      post = {
+        content: editContent.current,
+        link: link.data.secure_url,
+      };
+    } else {
+      post = {
+        content: editContent.current,
+        link: "",
+      };
+    }
+
+    await editPost(id, post);
+    const newPost = await getPosts();
+    setPosts(newPost);
+    onCloseModal();
   };
+
   //This function calls an API from Cloundinary and stores the images uploaded from the user in the cloud
   //Cloundinary returns a link to the image
   const onSubmit = async () => {
@@ -154,15 +238,14 @@ function Forum(props) {
     const image = files[0];
     console.log(image);
     console.log("uploadfile");
-    setButton(true);
     setImage(image);
   };
 
   //This fucntion is used for editing the post's image and sends it to Cloundinary to get a new link
-  const newImage = async (timeStamp) => {
-    setButton(false);
-    await editImage(image, timeStamp);
-  };
+  // const newImage = async (timeStamp) => {
+  //   setButton(false);
+  //   await editImage(image, timeStamp);
+  // };
 
   return (
     <Box minH={"87vh"}>
@@ -261,25 +344,16 @@ function Forum(props) {
                   </Text>
                 </Box>
               </Flex>
+
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              <Spacer />
+
               <Editable
                 isPreviewFocusable={false}
                 onSubmit={() => {
                   onEdit(post.post_id);
                 }}
               >
-                <div dangerouslySetInnerHTML={{ __html: post.content }} />
-
-                <EditablePreview />
-                {editing && (
-                  <ReactQuill
-                    theme="snow"
-                    name="txt"
-                    defaultValue={post.content}
-                    onChange={setEditContent}
-                  />
-                )}
-
-                <Spacer />
                 {post.link !== "" ? (
                   <>
                     <div className="image-preview">
@@ -296,27 +370,7 @@ function Forum(props) {
                 )}
                 {props.user.email === post.userEmail && (
                   <Flex mt={3}>
-                    <IconButton
-                      size={"sm"}
-                      colorScheme="orange"
-                      icon={<FontAwesomeIcon size="2xl" icon={faImage} />}
-                      onClick={onPressed}
-                    >
-                      <input
-                        id="clicker"
-                        type="file"
-                        style={{ display: "none" }}
-                        ref={hiddenFileInput}
-                        accept="image/*"
-                        onChange={(e) => uploadFile(e.target.files)}
-                      />
-                    </IconButton>
                     <Spacer />
-                    <Fade in={button}>
-                      <Button mr={4} onClick={() => newImage(post.id)}>
-                        Save
-                      </Button>
-                    </Fade>
                     <IconButton
                       mr={4}
                       size={"sm"}
@@ -324,12 +378,21 @@ function Forum(props) {
                       icon={<DeleteIcon />}
                       onClick={() => onDelete(post.post_id)}
                     ></IconButton>
-                    <EditableControls />
+                    <IconButton
+                      mr={4}
+                      size={"sm"}
+                      icon={<EditIcon />}
+                      onClick={() => {
+                        setSelectedPost(post);
+                        onOpenModal();
+                      }}
+                    ></IconButton>
                   </Flex>
                 )}
               </Editable>
             </Box>
           ))}
+        {selectedPost !== null && <ModalComponent />}
       </Container>
     </Box>
   );

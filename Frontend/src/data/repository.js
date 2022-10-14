@@ -20,10 +20,10 @@ async function findUser(id) {
   return response.data;
 }
 
-async function findUserName(email) {
-  const response = await axios.get(API_HOST + `/api/users/select/${email}`);
-  return response.data;
-}
+// async function findUserName(email) {
+//   const response = await axios.get(API_HOST + `/api/users/select/${email}`);
+//   return response.data;
+// }
 
 async function createUser(user) {
   const response = await axios.post(API_HOST + "/api/users", user);
@@ -59,7 +59,6 @@ async function getPosts() {
   const posts = await axios.get(API_HOST + "/api/posts");
   const users = await axios.get(API_HOST + "/api/users");
 
-  console.log(users.data);
   for (let i = 0; i < posts.data.length; i++) {
     for (let j = 0; j < users.data.length; j++) {
       if (users.data[j].email === posts.data[i].userEmail) {
@@ -80,12 +79,27 @@ async function deletePost(id) {
   return response.data;
 }
 
+async function editPost(id, post) {
+  let response = null;
+  if (post.link === "") {
+    response = await axios.put(
+      API_HOST + `/api/posts/updateContent/${id}`,
+      post
+    );
+  } else {
+    response = await axios.put(API_HOST + `/api/posts/update/${id}`, post);
+  }
+
+  return response.data;
+}
+
 export {
   verifyUser,
   findUser,
   createUser,
   getPosts,
   createPost,
+  editPost,
   deletePost,
   updateName,
   updateEmail,

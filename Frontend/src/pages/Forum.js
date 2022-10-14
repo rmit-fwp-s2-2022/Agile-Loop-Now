@@ -212,6 +212,7 @@ function Forum(props) {
     }
     onToggle();
     const newPost = await createPost(post);
+    newPost.name = props.user.name;
     setPosts([...posts, newPost]);
     reset();
   };
@@ -240,12 +241,6 @@ function Forum(props) {
     console.log("uploadfile");
     setImage(image);
   };
-
-  //This fucntion is used for editing the post's image and sends it to Cloundinary to get a new link
-  // const newImage = async (timeStamp) => {
-  //   setButton(false);
-  //   await editImage(image, timeStamp);
-  // };
 
   return (
     <Box minH={"87vh"}>

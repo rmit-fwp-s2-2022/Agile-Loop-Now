@@ -19,3 +19,11 @@ exports.deletePost = async (req, res) => {
   const user = await db.post.destroy({ where: { post_id: req.params.id } });
   res.json(user);
 };
+
+exports.updatePost = async (req, res) => {
+  const post = await db.post.update(
+    { content: req.body.content, link: req.body.link },
+    { where: { post_id: req.params.id } }
+  );
+  res.json(post);
+};

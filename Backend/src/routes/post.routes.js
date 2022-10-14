@@ -8,6 +8,8 @@ module.exports = (express, app) => {
   // Create post.
   router.post("/create", controller.createPost);
 
+  router.put("/update/:id", controller.updatePost);
+
   router.delete("/delete/:id", controller.deletePost);
 
   app.use("/api/posts", router);

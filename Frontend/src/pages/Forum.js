@@ -460,7 +460,7 @@ function Forum(props) {
                     <Box p={3} flex="1">
                       <FormControl>
                         <Input
-                          placeholder="custom placeholder"
+                          placeholder="Write a reply..."
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               onComment(e, post);

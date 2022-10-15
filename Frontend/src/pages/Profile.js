@@ -40,7 +40,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, updateName, updateEmail, deleteUser, getFollowings } from "../data/repository";
+import { findUser, updateName, updateEmail, deleteUser, getFollowings, loadUserPosts} from "../data/repository";
 import UserDisplay from "./UserDisplay";
 import Comment from "./Comment";
 
@@ -58,14 +58,16 @@ function Profile(props) {
   const [isDeletingUser, setDeletingUser] = useState(false); //Whether a user is being deleted
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [follows, setFollows] = useState([]);
+  const [posts, setPosts] = useState([]);
   const cancelRef = useRef();
 
-  const post = [{"name": "New user", "email": "mail@mail.com", "id":1, "content":"yooooo"}, {"name": "New user", "email": "mail@mail.com", "id":2}, {"name": "New user", "email": "mail@mail.com", "id":3}]
-
+  
   useEffect(() => {
     async function loadUser() {
       const currentUser = await findUser(id);
       const follows = await getFollowings(id);
+      const posts = await loadUserPosts(id);
+      setPosts(posts);
       setFollows(follows);
       setUserName(currentUser.name);
       setUserEmail(currentUser.email);
@@ -73,13 +75,13 @@ function Profile(props) {
       setIsLoading(false);
     }
     loadUser();
-  }, [setFollows]);
+  }, [setFollows], [setPosts]);
 
 
   function deleteAccount() {
     setDeletingUser(true);
     setTimeout(async () => {
-      // deleteUser(userEmail);
+    
       await deleteUser(userEmail);
       props.logout();
       navigate("/");
@@ -91,7 +93,7 @@ function Profile(props) {
   return (
     <Box pl={20}>
       <Flex>
-      <Center p={20}  minW='500px'>
+      <Box p={20}  minW='500px'>
       {isLoading ?
        <div>Loading</div>
        :
@@ -113,7 +115,7 @@ function Profile(props) {
                 if (userName !== value.name) {
                   editName(userEmail, value.name);
                   await updateName(value.name, userEmail);
-                  // console.log(res);
+                  
                   setAlertName(true);
                   setUserName(value.name);
                   setTimeout(() => {
@@ -300,12 +302,12 @@ function Profile(props) {
           </Box>
         </Container>
         }
-      </Center>
-        <Stack minW='40%' pt={70}>
+      </Box>
+        <Stack minW='40%' pt={70} pb={70}>
           <Box >
               <Heading>Comments</Heading>
           </Box>
-          {post.map(post => (<Comment key={post.id} name={post.name} content={post.content}/>))}
+          {posts.map(post => (<Comment key={post.post_id} name={post.name} content={post.content} time={post.createdAt} link={post.link}/>))}
         </Stack>
         <Stack pt={70} pl={70}>
           <Heading size="md" ml={3}>Following</Heading>
@@ -313,7 +315,7 @@ function Profile(props) {
             <Grid templateColumns='repeat(3, 1fr)' gap={3}>
               {follows.map((follow, index) => (
                 
-                <UserDisplay id={follow.follow_id} name={follow.name} email={follow.email} />
+                <UserDisplay id={follow.follow_id} name={follow.name} email={follow.email} user={id} currentUser={props.user.email}/>
               ))}
           
             </Grid>

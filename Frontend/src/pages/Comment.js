@@ -9,9 +9,10 @@ import {
     Editable,
     EditablePreview,
     EditableTextarea,
+    Image
   } from "@chakra-ui/react";
 
-function Comment({name, time, content}) {
+function Comment({name, time, content, link}) {
     const post = {"user": "Me", "time": "Time here", "value":"soome random post"}
     return ( 
         <Box>
@@ -24,23 +25,32 @@ function Comment({name, time, content}) {
                       <Heading size="sm">{name}</Heading>
                       <Text color={"gray.500"} fontSize={"xs"}>
                         {" "}
-                        Posted On {time}
+                        
+                        Posted On {Intl.DateTimeFormat("en-GB", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }).format(new Date(time))}
                       </Text>
                     </Box>
                   </Flex>
-
-                <Editable pl={2}
-                    value= {content}
-                    isPreviewFocusable={false}
-                >
-                    <EditablePreview />
-                    <Textarea
-                    name="txt"
-                    as={EditableTextarea}
-                    />
-                    <Spacer />
-                 
-                </Editable>
+                  
+                <Box p={4}>
+                  <div dangerouslySetInnerHTML={{ __html: content }} />
+                  { link && (
+                  <Box p={5}>
+                    <div className="image-preview">
+                        <img
+                          src={link}
+                          alt="preview"
+                          height={200}
+                          width={400}
+                        />
+                      </div>
+                  </Box>
+                  )}
+                </Box>
     
             </Box>
         </Box>

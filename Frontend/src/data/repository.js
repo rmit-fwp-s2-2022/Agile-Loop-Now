@@ -21,10 +21,6 @@ async function findUser(id) {
   return response.data;
 }
 
-// async function findUserName(email) {
-//   const response = await axios.get(API_HOST + `/api/users/select/${email}`);
-//   return response.data;
-// }
 
 async function createUser(user) {
   const response = await axios.post(API_HOST + "/api/users", user);
@@ -69,6 +65,21 @@ async function getPosts() {
   }
   return posts.data;
 }
+
+async function loadUserPosts(user){
+  const posts = await getPosts();
+ 
+  let userPosts = [];
+
+  for (const post of posts){
+    if (post.userEmail === user){
+      userPosts.push(post);
+    }
+  }
+  // console.log(userPosts);
+  return userPosts;
+}
+
 
 async function createPost(post) {
   const response = await axios.post(API_HOST + "/api/posts/create", post);
@@ -207,5 +218,5 @@ export {
   getComments,
   editPost,
   deletePost,
-
+  loadUserPosts
 };

@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { deleteFollow } from "../data/repository";
 
 
-function UserDisplay({name, email, id}) {
+function UserDisplay({name, email, id, user, currentUser}) {
     const [profileLink, setProfileLine] = useState("");
     const navigate = useNavigate();
 
@@ -31,9 +31,11 @@ function UserDisplay({name, email, id}) {
                 </Text>
                 </Link>
             </Box>
-            <Button colorScheme="teal" variant="solid" textAlign={"center"} size={"sm"} onClick={() => unfollow.apply()}>
-                Unfollow
-          </Button>
+            {user === currentUser ?
+                <Button colorScheme="teal" variant="solid" textAlign={"center"} size={"sm"} onClick={() => unfollow.apply()}>
+                    Unfollow
+                </Button>
+            :<></>}
         </Box>
      );
 }

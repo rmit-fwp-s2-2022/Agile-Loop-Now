@@ -6,6 +6,7 @@ import Testing from "./pages/testing";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
 import Forum from "./pages/Forum";
+import Users from "./pages/Users";
 import Authentication from "./pages/Authentication";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
@@ -47,6 +48,7 @@ function App() {
             element={<Login loginUser={loginUser} verifyUser={verifyUser} />}
           />
           <Route path="signup" element={<SignUp loginUser={loginUser} />} />
+          <Route path="users" element={<Users/>}/>
           <Route path="testing" element={<Testing />} />
           <Route path="profile/:id" element={<Profile logout={logoutUser} />} />
           <Route

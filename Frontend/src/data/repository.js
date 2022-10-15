@@ -63,6 +63,13 @@ async function getUserFollows(user) {
   return response.data;
 }
 
+async function loadUsersWithFollowers(user){
+  const users = await axios.get(API_HOST + "/api/users");
+  const userFollows = getUserFollows(user);
+
+  return users.data;
+}
+
 async function createFollow(follow) {
   const response = await axios.post(API_HOST + "/api/follows/follow", follow);
   return response.data;
@@ -76,6 +83,6 @@ async function deleteFollow(id){
 export {
   verifyUser, findUser, createUser,
   getPosts, createPost, updateName,
-  updateEmail, deleteUser
+  updateEmail, deleteUser, loadUsersWithFollowers
 }
 

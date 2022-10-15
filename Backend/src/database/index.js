@@ -20,8 +20,11 @@ db.follow = require("./models/follow.js")(db.sequelize, DataTypes);
 // db.post = require("./models/post.js")(db.sequelize, DataTypes);
 
 // Relate user and follows.
-db.follow.belongsTo(db.employee, {as: 'user_email'});
-db.follow.belongsTo(db.employee, {as: 'follower_email'});
+// db.user.hasMany(db.follow, {foreignKey: 'user_email'});
+// db.user.hasMany(db.follow, {foreignKey: 'follower_email'});
+
+// db.follow.belongsTo(db.user, { foreignKey: 'user_email'});
+// db.follow.belongsTo(db.user, { foreignKey: 'follower_email'});
 // Learn more about associations here: https://sequelize.org/master/manual/assocs.html
 
 // Include a sync option with seed data logic included.

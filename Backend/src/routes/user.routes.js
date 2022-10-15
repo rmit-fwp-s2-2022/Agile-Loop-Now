@@ -14,6 +14,8 @@ module.exports = (express, app) => {
   // Select user with name provided
   router.get("/getUser/:user", controller.getName);
 
+  router.get("/getUsername/:email", controller.getUserName);
+
   // Select one user from the database if username and password are a match.
   router.get("/login", controller.login);
 
@@ -26,7 +28,7 @@ module.exports = (express, app) => {
   // Update user email.
   router.put("/updateEmail/:id", controller.updateEmail);
 
-    // Update user email.
+  // Update user email.
   router.delete("/delete/:id", controller.deleteUser);
 
   // Add routes to server.

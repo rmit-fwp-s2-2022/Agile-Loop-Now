@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getUsers } from "./User";
 
 //The code below is taken from Lectorial code archive week 8
 //Writen by Shekhar Kalra
@@ -65,7 +66,29 @@ async function createPost(post) {
 // --- Follow ---------------------------------------------------------------------------------------
 async function getUserFollows(user) {
   const response = await axios.get(API_HOST + `/api/follows/getUser/${user}`);
+  console.log(response.data);
   return response.data;
+}
+
+async function getFollowings(user){
+  const follows = await getUserFollows(user);
+  const users = await axios.get(API_HOST + "/api/users");
+  let following = [];
+
+  for (const follow of follows){
+    for (const user of users.data){
+      if (user.email === follow.follower_email){
+        let u = {
+          email: user.email,
+          name: user.name,
+          following: true,
+          follow_id: follow.id
+        }
+        following.push(u);
+      }
+    }
+  }
+  return following;
 }
 
 async function loadUsersWithFollowers(user) {
@@ -127,5 +150,6 @@ export {
   loadUsersWithFollowers,
   isFollowing,
   createFollow,
-  deleteFollow
+  deleteFollow,
+  getFollowings
 };

@@ -40,7 +40,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
-import { findUser, updateName, updateEmail, deleteUser } from "../data/repository";
+import { findUser, updateName, updateEmail, deleteUser, getFollowings } from "../data/repository";
 import UserDisplay from "./UserDisplay";
 import Comment from "./Comment";
 
@@ -57,21 +57,24 @@ function Profile(props) {
   const [alertEmail, setAlertEmail] = useState(false); //Visual cues on succesful email change
   const [isDeletingUser, setDeletingUser] = useState(false); //Whether a user is being deleted
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [follows, setFollows] = useState([]);
   const cancelRef = useRef();
 
   const post = [{"name": "New user", "email": "mail@mail.com", "id":1, "content":"yooooo"}, {"name": "New user", "email": "mail@mail.com", "id":2}, {"name": "New user", "email": "mail@mail.com", "id":3}]
-  const follows = [{"name": "New user", "email": "mail@mail.com", "id":1},
-  {"name": "New user", "email": "mail@mail.com", "id":2}]
+  // const follows = [{"name": "New user", "email": "mail@mail.com", "id":1},
+  // {"name": "New user", "email": "mail@mail.com", "id":2}]
   useEffect(() => {
     async function loadUser() {
       const currentUser = await findUser(id);
+      const follows = await getFollowings(id);
+      setFollows(follows);
       setUserName(currentUser.name);
       setUserEmail(currentUser.email);
       setUserJoinedOn(currentUser.createdAt);
       setIsLoading(false);
     }
     loadUser();
-  });
+  }, [setFollows]);
 
 
   function deleteAccount() {
@@ -83,6 +86,8 @@ function Profile(props) {
       navigate("/");
     }, 3000);
   }
+
+
 
   return (
     <Box pl={20}>
@@ -140,7 +145,9 @@ function Profile(props) {
                           size={"xl"}
                           onChange={formik.handleChange}
                         />
+                        {props.user.email === id && (
                         <InputRightElement children={<EditableControls />} />
+                        )}
                       </Editable>
                       <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
                     </InputGroup>
@@ -203,13 +210,14 @@ function Profile(props) {
                       >
                         <EditablePreview />
                         <Input
+                          
                           name="email"
                           as={EditableInput}
                           variant="flushed"
                           size={"xl"}
                           onChange={formik.handleChange}
                         />
-                        <InputRightElement children={<EditableControls />} />
+                        
                       </Editable>
                     </InputGroup>
                     <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
@@ -239,10 +247,13 @@ function Profile(props) {
             </Box>
           </Stack>
           <Box pl={10} pr={10} pb={10}>
+          {props.user.email === id  ?
             <Button colorScheme="red" onClick={onOpen} minW={"100%"}>
               DELETE ACCOUNT
             </Button>
-
+          : 
+            <></>
+          }
             <AlertDialog
               isOpen={isOpen}
               leastDestructiveRef={cancelRef}
@@ -299,12 +310,15 @@ function Profile(props) {
         </Stack>
         <Stack pt={70} pl={70}>
           <Heading size="md" ml={3}>Following</Heading>
-          <Grid templateColumns='repeat(3, 1fr)' gap={3}>
-            {follows.map(follows => (
-            <UserDisplay key={follows.id} name={follows.name} email={follows.email}/>
-            ))}
-            
-          </Grid>
+         
+            <Grid templateColumns='repeat(3, 1fr)' gap={3}>
+              {follows.map((follow, index) => (
+                
+                <UserDisplay id={follow.follow_id} name={follow.name} email={follow.email} />
+              ))}
+          
+            </Grid>
+         
         </Stack>
       </Flex>
     </Box>

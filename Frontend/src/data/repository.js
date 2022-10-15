@@ -70,9 +70,26 @@ async function getUserFollows(user) {
 
 async function loadUsersWithFollowers(user) {
   const users = await axios.get(API_HOST + "/api/users");
-  // const userFollows = getUserFollows(user);
+  const followers = await getUserFollows(user);
+  let following = [];
+  for (const user of users.data){
+    let u = {
+      email: user.email,
+      name: user.name,
+      following: false,
+      follow_id: null
+    }
+    for (const follow of followers){
+      if (follow.follower_email === user.email){
+        u.following = true;
+        u.follow_id = follow.id;
+        break;
+      }
+    }
+    following.push(u);
+  }
 
-  return users.data;
+  return following;
 }
 
 async function isFollowing(user_email, follower_email) {
@@ -110,4 +127,5 @@ export {
   loadUsersWithFollowers,
   isFollowing,
   createFollow,
+  deleteFollow
 };

@@ -203,10 +203,9 @@ export {
   isFollowing,
   createFollow,
   deleteFollow,
-  getFollowings
+  getFollowings,
   createComment,
   getComments,
-  createPost,
   editPost,
   deletePost,
 

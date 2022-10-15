@@ -28,7 +28,8 @@ module.exports = (express, app) => {
   // Update user email.
   router.put("/updateEmail/:id", controller.updateEmail);
 
-  // Update user email.
+
+  // Delete a user.
   router.delete("/delete/:id", controller.deleteUser);
 
   // Add routes to server.

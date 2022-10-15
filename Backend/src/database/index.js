@@ -16,6 +16,14 @@ db.sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
 
 // Include models.
 db.user = require("./models/user.js")(db.sequelize, DataTypes);
+
+db.follow = require("./models/follow.js")(db.sequelize, DataTypes);
+// db.post = require("./models/post.js")(db.sequelize, DataTypes);
+
+// Relate user and follows.
+// db.user.hasMany(db.follow, {foreignKey: 'user_email'});
+// db.user.hasMany(db.follow, {foreignKey: 'follower_email'});
+
 db.post = require("./models/post.js")(db.sequelize, DataTypes);
 
 // Relate post and user.
@@ -23,6 +31,9 @@ db.post.belongsTo(db.user, {
   foreignKey: { userEmail: "email", allowNull: false },
 });
 
+
+// db.follow.belongsTo(db.user, { foreignKey: 'user_email'});
+// db.follow.belongsTo(db.user, { foreignKey: 'follower_email'});
 // Learn more about associations here: https://sequelize.org/master/manual/assocs.html
 
 // Include a sync option with seed data logic included.
@@ -38,6 +49,10 @@ db.sync = async () => {
 
 async function seedData() {
   const count = await db.user.count();
+  const follows = await db.follow.count();
+
+
+  // await db.follow.create({ user_email: "mbolger@mail.com", follower_email: "mail@m.com"});
 
   // if (postNum > 0) return;
 
@@ -61,6 +76,7 @@ async function seedData() {
   });
 
   hash = await argon2.hash("def456", { type: argon2.argon2id });
+
   await db.user.create({
     email: "shekhar@mail.com",
     password_hash: hash,
@@ -73,6 +89,7 @@ async function seedData() {
     password_hash: hash,
     name: "test",
   });
+
 }
 
 module.exports = db;

@@ -4,6 +4,9 @@ module.exports = (express, app) => {
   
     // Get all user follows
     router.get("/getUser/:user", controller.getUserFollows);
+
+    // Check if a user is following a certain user
+    router.get("/isfollowing", controller.isFollowing);
   
     // Follow a user.
     router.post("/follow", controller.createFollow);

@@ -40,7 +40,9 @@ db.sync = async () => {
 
 async function seedData() {
   const count = await db.user.count();
+  const follows = await db.follow.count();
 
+  // await db.follow.create({ user_email: "mbolger@mail.com", follower_email: "mail@m.com"});
   // Only seed data if necessary.
   if(count > 0)
     return;
@@ -52,6 +54,8 @@ async function seedData() {
 
   hash = await argon2.hash("def456", { type: argon2.argon2id });
   await db.user.create({ email: "shekhar@mail.com", password_hash: hash, name: "Shekhar"});
+
+ 
 }
 
 module.exports = db;

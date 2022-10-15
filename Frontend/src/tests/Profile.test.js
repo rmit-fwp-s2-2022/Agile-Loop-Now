@@ -5,7 +5,7 @@ import {
   deleteUser,
   findUser,
   updateName,
-  updateEmail,
+  verifyUser,
 } from "../data/repository";
 import { editEmail, setCurrentUser } from "../data/User";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -36,7 +36,9 @@ afterEach(async () => {
 test("Load user profile", async () => {
   render(
     <Router>
-      <Profile />
+      <Profile
+        user={await verifyUser(profileUser.email, profileUser.password)}
+      />
     </Router>
   );
 

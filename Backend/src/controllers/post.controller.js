@@ -2,7 +2,9 @@ const db = require("../database");
 const { Op } = require("sequelize");
 
 exports.allPost = async (req, res) => {
-  const posts = await db.post.findAll();
+  const posts = await db.post.findAll({
+    where: { parent_id: null },
+  });
   res.json(posts);
 };
 

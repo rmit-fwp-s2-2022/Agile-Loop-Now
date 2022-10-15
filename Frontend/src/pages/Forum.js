@@ -58,7 +58,7 @@ function Forum(props) {
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [comments, setComments] = useState([]);
   const [image, setImage] = useState(null);
-  // const [comment, setComment] = useState("");
+  const [clear, setClear] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
@@ -130,19 +130,19 @@ function Forum(props) {
   //Fetch all the posts made by all the users
 
   const onComment = async (e, post) => {
-    console.log(e.target.value);
-    console.log(post);
-
     const apiCom = await getComments();
     console.log(apiCom);
 
-    // const comment = {
-    //   content: e.target.value,
-    //   userEmail: post.userEmail,
-    //   parent_id: post.post_id
-    // }
+    const comment = {
+      content: e.target.value,
+      userEmail: post.userEmail,
+      parent_id: post.post_id,
+    };
 
-    // const newComment = await createComment(comment);
+    const newComment = await createComment(comment);
+    newComment.name = props.user.name;
+    setComments([...comments, newComment]);
+    setClear("");
   };
 
   const onEdit = async (id) => {
@@ -174,7 +174,6 @@ function Forum(props) {
 
     if (image !== null) {
       const link = await axios.post(API, formData);
-      console.log(link.data.secure_url);
       post = {
         content: editContent.current,
         link: link.data.secure_url,
@@ -451,9 +450,11 @@ function Forum(props) {
                       <FormControl>
                         <Input
                           placeholder="custom placeholder"
+                          defaultValue={clear}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               onComment(e, post);
+                              e.target.value = "";
                             }
                           }}
                         />

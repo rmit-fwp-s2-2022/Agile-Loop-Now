@@ -23,7 +23,6 @@ exports.getUserName = async (req, res) => {
 
 exports.getName = async (req, res) => {
   const user = await db.user.findOne({ where: { name: req.params.user } });
-
   res.json(user);
 };
 

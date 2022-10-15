@@ -32,7 +32,14 @@ import "react-quill/dist/quill.snow.css";
 
 import { DeleteIcon, EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useRef } from "react";
-import { getPosts, createPost, deletePost, editPost } from "../data/repository";
+import {
+  getPosts,
+  createPost,
+  deletePost,
+  editPost,
+  createComment,
+  getComments,
+} from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -49,15 +56,16 @@ function Forum(props) {
   const [content, setContent] = useState(""); // Used to set react quill input
   const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
+  const [comments, setComments] = useState([]);
   const [image, setImage] = useState(null);
-  const [comment, setComment] = useState("");
+  // const [comment, setComment] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
   useEffect(() => {
     async function loadPosts() {
-      const postData = await getPosts();
+      const postData = await getPosts("posts");
       setPosts(postData);
     }
     loadPosts();
@@ -121,8 +129,20 @@ function Forum(props) {
 
   //Fetch all the posts made by all the users
 
-  const onComment = () => {
-    console.log(comment);
+  const onComment = async (e, post) => {
+    console.log(e.target.value);
+    console.log(post);
+
+    const apiCom = await getComments();
+    console.log(apiCom);
+
+    // const comment = {
+    //   content: e.target.value,
+    //   userEmail: post.userEmail,
+    //   parent_id: post.post_id
+    // }
+
+    // const newComment = await createComment(comment);
   };
 
   const onEdit = async (id) => {
@@ -431,11 +451,9 @@ function Forum(props) {
                       <FormControl>
                         <Input
                           placeholder="custom placeholder"
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              onComment();
+                              onComment(e, post);
                             }
                           }}
                         />

@@ -1,4 +1,5 @@
 const db = require("../database");
+const { Op } = require("sequelize");
 
 exports.allPost = async (req, res) => {
   const posts = await db.post.findAll();
@@ -15,8 +16,8 @@ exports.createPost = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
-  const user = await db.post.destroy({ where: { post_id: req.params.id } });
-  res.json(user);
+  const post = await db.post.destroy({ where: { post_id: req.params.id } });
+  res.json(post);
 };
 
 exports.updatePost = async (req, res) => {
@@ -36,11 +37,18 @@ exports.updatePostContent = async (req, res) => {
 };
 
 exports.createComment = async (req, res) => {
-  const post = await db.post.create({
+  const comment = await db.post.create({
     content: req.body.content,
     link: "",
     userEmail: req.body.userEmail,
     parent_id: req.body.parent_id,
   });
-  res.json(post);
+  res.json(comment);
+};
+
+exports.getComments = async (req, res) => {
+  const comments = await db.post.findAll({
+    where: { parent_id: { [Op.ne]: null } },
+  });
+  res.json(comments);
 };

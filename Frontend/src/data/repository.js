@@ -74,6 +74,24 @@ async function createPost(post) {
   return response.data;
 }
 
+async function getComments() {
+  const comments = await axios.get(API_HOST + "/api/posts/getComments");
+  const users = await axios.get(API_HOST + "/api/users");
+
+  for (let i = 0; i < comments.data.length; i++) {
+    for (let j = 0; j < users.data.length; j++) {
+      if (users.data[j].email === comments.data[i].userEmail) {
+        comments.data[i].name = users.data[j].name;
+      }
+    }
+  }
+  return comments.data;
+}
+
+async function createComment(comment) {
+  const response = await axios.post(API_HOST + "/api/posts/createCom", comment);
+  return response.data;
+}
 async function deletePost(id) {
   const response = await axios.delete(API_HOST + `/api/posts/delete/${id}`);
   return response.data;
@@ -98,6 +116,8 @@ export {
   findUser,
   createUser,
   getPosts,
+  createComment,
+  getComments,
   createPost,
   editPost,
   deletePost,

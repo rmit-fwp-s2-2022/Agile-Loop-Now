@@ -16,5 +16,7 @@ module.exports = (express, app) => {
 
   router.post("/createCom", controller.createComment);
 
+  router.get("/getComments", controller.getComments);
+
   app.use("/api/posts", router);
 };

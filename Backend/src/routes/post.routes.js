@@ -14,5 +14,7 @@ module.exports = (express, app) => {
 
   router.delete("/delete/:id", controller.deletePost);
 
+  router.post("/createCom", controller.createComment);
+
   app.use("/api/posts", router);
 };

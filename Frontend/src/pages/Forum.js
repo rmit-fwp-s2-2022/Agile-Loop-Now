@@ -17,8 +17,11 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  FormControl,
   ModalFooter,
+  Input,
   ModalBody,
+  HStack,
   ModalCloseButton,
 } from "@chakra-ui/react";
 
@@ -47,8 +50,8 @@ function Forum(props) {
   const editContent = useRef("");
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [image, setImage] = useState(null);
+  const [comment, setComment] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
-  // const [button, setButton] = useState(false);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
@@ -117,6 +120,10 @@ function Forum(props) {
   }
 
   //Fetch all the posts made by all the users
+
+  const onComment = () => {
+    console.log(comment);
+  };
 
   const onEdit = async (id) => {
     let post = {};
@@ -320,73 +327,127 @@ function Forum(props) {
         {/*map goes here*/}
         {posts !== null &&
           posts.map((post) => (
-            <Box key={post.post_id} p={4} rounded={"lg"} borderWidth={1} mt={3}>
-              <Flex>
-                <Box pt={2} pb={2}>
-                  <Avatar bg="teal.500" size={"md"} />
-                </Box>
-                <Box p={3}>
-                  <Heading size="sm">{post.name}</Heading>
-                  <Text color={"gray.500"} fontSize={"xs"}>
-                    {" "}
-                    Posted On{" "}
-                    {Intl.DateTimeFormat("en-GB", {
-                      weekday: "short",
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }).format(new Date(post.createdAt))}
-                  </Text>
-                </Box>
-              </Flex>
-
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
-              <Spacer />
-
-              <Editable
-                isPreviewFocusable={false}
-                onSubmit={() => {
-                  onEdit(post.post_id);
-                }}
+            <>
+              <Box
+                key={post.post_id}
+                p={4}
+                rounded={"lg"}
+                borderWidth={1}
+                mt={3}
               >
-                {post.link !== "" ? (
-                  <>
-                    <div className="image-preview">
-                      <img
-                        src={post.link}
-                        alt="preview"
-                        height={200}
-                        width={400}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-                {props.user.email === post.userEmail && (
-                  <Flex mt={3}>
-                    <Spacer />
-                    <IconButton
-                      mr={4}
-                      size={"sm"}
-                      colorScheme="red"
-                      icon={<DeleteIcon />}
-                      onClick={() => onDelete(post.post_id)}
-                    ></IconButton>
-                    <IconButton
-                      mr={4}
-                      size={"sm"}
-                      icon={<EditIcon />}
-                      onClick={() => {
-                        setSelectedPost(post);
-                        onOpenModal();
-                      }}
-                    ></IconButton>
+                <Flex>
+                  <Box pt={2} pb={2}>
+                    <Avatar bg="teal.500" size={"md"} />
+                  </Box>
+                  <Box p={3}>
+                    <Heading size="sm">{post.name}</Heading>
+                    <Text color={"gray.500"} fontSize={"xs"}>
+                      {" "}
+                      Posted On{" "}
+                      {Intl.DateTimeFormat("en-GB", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      }).format(new Date(post.createdAt))}
+                    </Text>
+                  </Box>
+                </Flex>
+
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                <Spacer />
+
+                <Editable
+                  isPreviewFocusable={false}
+                  onSubmit={() => {
+                    onEdit(post.post_id);
+                  }}
+                >
+                  {post.link !== "" ? (
+                    <>
+                      <div className="image-preview">
+                        <img
+                          src={post.link}
+                          alt="preview"
+                          height={200}
+                          width={400}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  {props.user.email === post.userEmail && (
+                    <Flex mt={3}>
+                      <Spacer />
+                      <IconButton
+                        mr={4}
+                        size={"sm"}
+                        colorScheme="red"
+                        icon={<DeleteIcon />}
+                        onClick={() => onDelete(post.post_id)}
+                      ></IconButton>
+                      <IconButton
+                        mr={4}
+                        size={"sm"}
+                        icon={<EditIcon />}
+                        onClick={() => {
+                          setSelectedPost(post);
+                          onOpenModal();
+                        }}
+                      ></IconButton>
+                    </Flex>
+                  )}
+                </Editable>
+                <Box rounded={"lg"} mt={3}>
+                  <Flex>
+                    <Box pt={2} pb={2}>
+                      <Avatar bg="teal.500" size={"md"} />
+                    </Box>
+                    <Box p={3}>
+                      <HStack spacing="24px">
+                        <Heading size="sm">{post.name}</Heading>
+                        <Text color={"gray.500"} fontSize={"xs"}>
+                          {" "}
+                          Posted On{" "}
+                          {Intl.DateTimeFormat("en-GB", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }).format(new Date(post.createdAt))}
+                        </Text>
+                      </HStack>
+                      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+                    </Box>
                   </Flex>
-                )}
-              </Editable>
-            </Box>
+                </Box>
+                <Box p={3} rounded={"lg"} mt={3}>
+                  <HStack spacing={2} direction="row">
+                    <Box pt={2} pb={2}>
+                      <Avatar bg="teal.500" size={"md"} />
+                    </Box>
+                    <Box p={3} flex="1">
+                      <FormControl>
+                        <Input
+                          placeholder="custom placeholder"
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              onComment();
+                            }
+                          }}
+                        />
+                      </FormControl>
+                    </Box>
+                  </HStack>
+                </Box>
+              </Box>
+              <br />
+            </>
           ))}
+
         {selectedPost !== null && <ModalComponent />}
       </Container>
     </Box>

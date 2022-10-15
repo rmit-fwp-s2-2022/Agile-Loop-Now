@@ -9,7 +9,6 @@ exports.createPost = async (req, res) => {
   const post = await db.post.create({
     content: req.body.content,
     link: req.body.link,
-    timeStamp: req.body.timeStamp,
     userEmail: req.body.userEmail,
   });
   res.json(post);
@@ -33,5 +32,15 @@ exports.updatePostContent = async (req, res) => {
     { content: req.body.content },
     { where: { post_id: req.params.id } }
   );
+  res.json(post);
+};
+
+exports.createComment = async (req, res) => {
+  const post = await db.post.create({
+    content: req.body.content,
+    link: "",
+    userEmail: req.body.userEmail,
+    parent_id: req.body.parent_id,
+  });
   res.json(post);
 };

@@ -5,14 +5,15 @@ const argon2 = require("argon2");
 exports.createFollow = async (req, res) => {
     const follow = await db.follow.create({
       user_email: req.body.user_email,
-      follower_email: req.body.user_email,
+      follower_email: req.body.follower_email,
     });
   
     res.json(follow);
 };
 
 exports.isFollowing = async (req, res) => {
-  const follow = await db.follow.findOne({where: {user_email: req.body.email, follower_email: req.body.follower_email}});
+  console.log(req.body);
+  const follow = await db.follow.findOne({where: {user_email: req.body.user_email, follower_email: req.body.follower_email}});
   res.json(follow);
 }
 

@@ -70,8 +70,9 @@ async function loadUsersWithFollowers(user){
   return users.data;
 }
 
-async function isFollowing(email, follower_email){
-  const response = await axios.get(API_HOST + "/api/follows/isfollowing", {"email": email, "follower_email": follower_email});
+async function isFollowing(follow){
+  // console.log(email);
+  const response = await axios.get(API_HOST + "/api/follows/isfollowing", follow);
   return response.data
 }
 

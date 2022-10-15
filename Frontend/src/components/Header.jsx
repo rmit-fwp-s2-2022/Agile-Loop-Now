@@ -49,6 +49,11 @@ function Header(props) {
                 My Profile
               </Button>
             </Link>
+            <Link to={"/users"} >
+              <Button colorScheme="teal" variant="ghost">
+                Users
+              </Button>
+            </Link>
             <Link to="/login">
               <Button colorScheme="teal" variant="ghost" onClick={props.logout}>
                 Log Out

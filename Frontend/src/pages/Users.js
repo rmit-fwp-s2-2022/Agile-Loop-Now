@@ -16,8 +16,8 @@ function Users(props) {
     useEffect(() => {
         async function loadUsers() {
           const userData = await loadUsersWithFollowers();
-        //   console.log(await isFollowing(props.user.email, "asd@asd.com"))
-          await createFollow({user_email: props.user.email, follower_email: "mail@m.com"})
+          console.log(await isFollowing("test@mail.com", "asd@asd.com"))
+        //   await createFollow({user_email: props.user.email, follower_email: "mail@m.com"})
           setUsers(userData);
         }
         loadUsers();

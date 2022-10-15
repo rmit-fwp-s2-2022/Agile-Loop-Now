@@ -16,7 +16,7 @@ function Header(props) {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <div className="fpad">
+    <div className="fpad" data-testid="navbar">
       <Flex minWidth="max-content" alignItems="center" gap="4">
         <Box p="2">
           <Link to="/">
@@ -29,39 +29,42 @@ function Header(props) {
         </Box>
         <Spacer />
         <ButtonGroup gap="2" pr="10px">
-          {props.user === null ?  
-          <Box>
-            <Link to="/signup">
-              <Button colorScheme="teal" variant="ghost">
-                Sign Up
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button colorScheme="teal" variant="ghost">
-                Log In
-              </Button>
-            </Link>
-          </Box>
-          :
-          <Box>
-            <Link to="/profile">
-              <Button colorScheme="teal" variant="ghost">
-                My Profile
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button colorScheme="teal" variant="ghost" onClick={props.logout}>
-                Log Out
-              </Button>
-            </Link>
-            <Link to="/forum">
-              <Button colorScheme="teal" variant="ghost">
-                Forum
-              </Button>
-            </Link>
-          </Box>
-
-          }
+          {props.user === null ? (
+            <Box>
+              <Link to="/signup">
+                <Button colorScheme="teal" variant="ghost">
+                  Sign Up
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button colorScheme="teal" variant="ghost">
+                  Log In
+                </Button>
+              </Link>
+            </Box>
+          ) : (
+            <Box>
+              <Link to="/profile">
+                <Button colorScheme="teal" variant="ghost">
+                  My Profile
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button
+                  colorScheme="teal"
+                  variant="ghost"
+                  onClick={props.logout}
+                >
+                  Log Out
+                </Button>
+              </Link>
+              <Link to="/forum">
+                <Button colorScheme="teal" variant="ghost">
+                  Forum
+                </Button>
+              </Link>
+            </Box>
+          )}
           <IconButton
             variant="outline"
             icon={colorMode === "light" ? <SunIcon /> : <MoonIcon />}

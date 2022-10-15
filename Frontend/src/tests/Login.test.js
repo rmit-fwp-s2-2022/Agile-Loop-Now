@@ -8,19 +8,12 @@ const testUser = {
   password: "Password12#",
 };
 
-afterEach(async () => {
-  // await deleteUser(testUser.email);
-});
-
-beforeEach(() => {
+test("Login test", async () => {
   render(
     <Router>
       <Login />
     </Router>
   );
-});
-
-test("Login test", async () => {
   //Simulate user input for Email field
   const emailVal = screen.getByPlaceholderText("Enter your email address");
   fireEvent.change(emailVal, { target: { value: testUser.email } });

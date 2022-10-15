@@ -58,15 +58,16 @@ function Forum(props) {
   const [posts, setPosts] = useState([]); // Used to set the list of post from API
   const [comments, setComments] = useState([]);
   const [image, setImage] = useState(null);
-  const [clear, setClear] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
   useEffect(() => {
     async function loadPosts() {
-      const postData = await getPosts("posts");
+      const postData = await getPosts();
+      const commentData = await getComments();
       setPosts(postData);
+      setComments(commentData);
     }
     loadPosts();
   }, [setPosts]);
@@ -142,7 +143,7 @@ function Forum(props) {
     const newComment = await createComment(comment);
     newComment.name = props.user.name;
     setComments([...comments, newComment]);
-    setClear("");
+    e.target.value = "";
   };
 
   const onEdit = async (id) => {
@@ -418,29 +419,39 @@ function Forum(props) {
                     </Flex>
                   )}
                 </Editable>
-                <Box rounded={"lg"} mt={3}>
-                  <Flex>
-                    <Box pt={2} pb={2}>
-                      <Avatar bg="teal.500" size={"md"} />
-                    </Box>
-                    <Box p={3}>
-                      <HStack spacing="24px">
-                        <Heading size="sm">{post.name}</Heading>
-                        <Text color={"gray.500"} fontSize={"xs"}>
-                          {" "}
-                          Posted On{" "}
-                          {Intl.DateTimeFormat("en-GB", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }).format(new Date(post.createdAt))}
-                        </Text>
-                      </HStack>
-                      <div dangerouslySetInnerHTML={{ __html: post.content }} />
-                    </Box>
-                  </Flex>
-                </Box>
+                {comments !== null &&
+                  comments.map(
+                    (comment) =>
+                      comment.parent_id === post.post_id && (
+                        <Box rounded={"lg"} mt={3}>
+                          <Flex>
+                            <Box pt={2} pb={2}>
+                              <Avatar bg="teal.500" size={"md"} />
+                            </Box>
+                            <Box p={3}>
+                              <HStack spacing="24px">
+                                <Heading size="sm">{comment.name}</Heading>
+                                <Text color={"gray.500"} fontSize={"xs"}>
+                                  {" "}
+                                  Posted On{" "}
+                                  {Intl.DateTimeFormat("en-GB", {
+                                    weekday: "short",
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  }).format(new Date(comment.createdAt))}
+                                </Text>
+                              </HStack>
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: comment.content,
+                                }}
+                              />
+                            </Box>
+                          </Flex>
+                        </Box>
+                      )
+                  )}
                 <Box p={3} rounded={"lg"} mt={3}>
                   <HStack spacing={2} direction="row">
                     <Box pt={2} pb={2}>
@@ -450,11 +461,9 @@ function Forum(props) {
                       <FormControl>
                         <Input
                           placeholder="custom placeholder"
-                          defaultValue={clear}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               onComment(e, post);
-                              e.target.value = "";
                             }
                           }}
                         />

@@ -69,13 +69,7 @@ import "react-quill/dist/quill.snow.css";
 // }
 
 import { Field, Formik, Form } from "formik";
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Button,
-  Input,
-} from "@chakra-ui/react";
+import { FormControl, FormErrorMessage, Button } from "@chakra-ui/react";
 function Testing() {
   function validateName(value) {
     let error;

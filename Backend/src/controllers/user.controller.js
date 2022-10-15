@@ -7,7 +7,6 @@ const argon2 = require("argon2");
 // Select all users from the database.
 exports.all = async (req, res) => {
   const users = await db.user.findAll();
-
   res.json(users);
 };
 
@@ -17,9 +16,13 @@ exports.one = async (req, res) => {
   res.json(user);
 };
 
+exports.getUserName = async (req, res) => {
+  const user = await db.user.findByPk(req.params.email);
+  res.json(user);
+};
+
 exports.getName = async (req, res) => {
   const user = await db.user.findOne({ where: { name: req.params.user } });
-
   res.json(user);
 };
 
@@ -51,19 +54,24 @@ exports.create = async (req, res) => {
 
 // Update user name in the database
 exports.updateName = async (req, res) => {
-  const user = await db.user.update({name: req.body.name}, {where: {email: req.params.id}});
+  const user = await db.user.update(
+    { name: req.body.name },
+    { where: { email: req.params.id } }
+  );
   res.json(user);
-}
-
+};
 
 // Update user email in the database
 exports.updateEmail = async (req, res) => {
-  const user = await db.user.update({email: req.body.newEmail}, {where: {email: req.params.id}});
+  const user = await db.user.update(
+    { email: req.body.newEmail },
+    { where: { email: req.params.id } }
+  );
   res.json(user);
-}
+};
 
 // Delete a user from the database
 exports.deleteUser = async (req, res) => {
-  const user = await db.user.destroy({where: {email: req.params.id}});
+  const user = await db.user.destroy({ where: { email: req.params.id } });
   res.json(user);
-}
+};

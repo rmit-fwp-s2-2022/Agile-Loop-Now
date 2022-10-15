@@ -132,7 +132,7 @@ function Forum(props) {
 
   const onComment = async (e, post) => {
     const apiCom = await getComments();
-    console.log(apiCom);
+   
 
     const comment = {
       content: e.target.value,

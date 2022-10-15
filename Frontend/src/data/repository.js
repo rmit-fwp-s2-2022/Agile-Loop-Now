@@ -102,7 +102,6 @@ async function deletePost(id) {
 // --- Follow ---------------------------------------------------------------------------------------
 async function getUserFollows(user) {
   const response = await axios.get(API_HOST + `/api/follows/getUser/${user}`);
-  console.log(response.data);
   return response.data;
 }
 

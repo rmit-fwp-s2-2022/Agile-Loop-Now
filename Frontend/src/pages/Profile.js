@@ -61,8 +61,7 @@ function Profile(props) {
   const cancelRef = useRef();
 
   const post = [{"name": "New user", "email": "mail@mail.com", "id":1, "content":"yooooo"}, {"name": "New user", "email": "mail@mail.com", "id":2}, {"name": "New user", "email": "mail@mail.com", "id":3}]
-  // const follows = [{"name": "New user", "email": "mail@mail.com", "id":1},
-  // {"name": "New user", "email": "mail@mail.com", "id":2}]
+
   useEffect(() => {
     async function loadUser() {
       const currentUser = await findUser(id);

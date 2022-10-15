@@ -13,10 +13,7 @@ function Users(props) {
   useEffect(() => {
     async function loadUsers() {
       const userData = await loadUsersWithFollowers(props.user.email);
-      
-      
-      //   console.log(following);
-      //   await createFollow({user_email: props.user.email, follower_email: "mail@m.com"})
+
       setUsers(userData);
     }
     loadUsers();

@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
-// import { useState } from "react";
 
 function Header(props) {
   const { colorMode, toggleColorMode } = useColorMode();

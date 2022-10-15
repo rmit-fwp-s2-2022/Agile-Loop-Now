@@ -68,10 +68,10 @@ function SignUp(props) {
               };
               
               await createUser(user); //Add user to mySQL database
-              // addUser(user); //Add user to local storage
+              
               props.loginUser(user); //Set logged in user
               navigate(generatePath("/profile/:id", { id:user.email }));
-              // navigate("/");
+              
             }, 1500);
           }}
           

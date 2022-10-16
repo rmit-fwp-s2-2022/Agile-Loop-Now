@@ -1,7 +1,10 @@
 module.exports = (express, app) => {
     const controller = require("../controllers/reaction.controller.js");
     const router = express.Router();
-  
+    
+     // Select all reactions.
+    router.get("/", controller.all);
+
     // Get all user reacts
     router.get("/getReacts/:user", controller.getUserReactions);
 

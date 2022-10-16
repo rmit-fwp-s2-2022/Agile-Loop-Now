@@ -63,7 +63,6 @@ async function getPosts() {
       }
     }
   }
-  console.log(posts.data)
   return posts.data;
 }
 
@@ -212,9 +211,23 @@ async function deleteReaction(id) {
   return response.data;
 }
 
+async function getAllReactions(){
+  const reactions = await axios.get(API_HOST + "/api/reactions");
+  return reactions.data;
+}
+
+async function getPostReactions(){
+  const posts = await getPosts();
+  const reactions = await getAllReactions();
+}
+
+
+
 async function loadPostsWithReactions(user) {
   const posts = await getPosts();
   const reactions = await getUserReactions(user);
+  
+
   let reacts = [];
   for (const post of posts){
     let p = {
@@ -229,14 +242,15 @@ async function loadPostsWithReactions(user) {
       reaction: null
     }
     for (const reaction of reactions){
-      if (reaction.user_email === post.userEmail){
+      
+      if (reaction.user_email === user){
         p.reaction = reaction.reaction;
         break;
       }
     }
     reacts.push(p);
   }
-
+  console.log(reacts);
   return reacts;
 }
 

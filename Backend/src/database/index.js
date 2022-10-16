@@ -19,7 +19,7 @@ db.user = require("./models/user.js")(db.sequelize, DataTypes);
 
 db.follow = require("./models/follow.js")(db.sequelize, DataTypes);
 
-db.reaction = require("./models/follow.js")(db.sequelize, DataTypes);
+db.reaction = require("./models/reaction.js")(db.sequelize, DataTypes);
 // db.post = require("./models/post.js")(db.sequelize, DataTypes);
 
 // Relate user and follows.
@@ -33,13 +33,13 @@ db.post.belongsTo(db.user, {
   foreignKey: { userEmail: "email", allowNull: false },
 });
 
-db.reaction.belongsTo(db.post, {
-  foreignKey: { post_id: "post_id", allowNull: false },
-});
+// db.reaction.belongsTo(db.post, {
+//   foreignKey: { post_id: "post_id", allowNull: false },
+// });
 
-db.follow.belongsTo(db.user, {
-  foreignKey: { user_email: "email", allowNull: false },
-});
+// db.follow.belongsTo(db.user, {
+//   foreignKey: { user_email: "email", allowNull: false },
+// });
 
 // db.follow.belongsTo(db.user, { foreignKey: 'user_email'});
 // db.follow.belongsTo(db.user, { foreignKey: 'follower_email'});

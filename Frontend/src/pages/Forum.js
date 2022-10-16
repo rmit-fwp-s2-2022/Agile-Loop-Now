@@ -23,6 +23,10 @@ import {
   ModalBody,
   HStack,
   ModalCloseButton,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverBody
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -39,10 +43,12 @@ import {
   editPost,
   createComment,
   getComments,
+  loadPostsWithReactions
 } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { ReactionBarSelector, PokemonSelector, PokemonCounter, FacebookCounter, FacebookSelector, emoji  } from '@charkour/react-reactions';
 
 function Forum(props) {
   const toast = useToast();
@@ -62,9 +68,14 @@ function Forum(props) {
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
+  function selectReaction(){
+    console.log()
+  }
+
+
   useEffect(() => {
     async function loadPosts() {
-      const postData = await getPosts();
+      const postData = await loadPostsWithReactions(props.user.email);
       const commentData = await getComments();
       setPosts(postData);
       setComments(commentData);
@@ -75,6 +86,7 @@ function Forum(props) {
   function ModalComponent() {
     return (
       <>
+      
         <Modal
           closeOnOverlayClick={false}
           isOpen={isOpenModal}
@@ -355,6 +367,8 @@ function Forum(props) {
                 borderWidth={1}
                 mt={3}
               >
+                
+                
                 <Flex>
                   <Box pt={2} pb={2}>
                     <Avatar bg="teal.500" size={"md"} />
@@ -372,6 +386,16 @@ function Forum(props) {
                       }).format(new Date(post.createdAt))}
                     </Text>
                   </Box>
+                  <Spacer />
+                  
+                  <Popover placement='top-start' matchWidth>
+                    <PopoverTrigger>
+                      <FacebookCounter />
+                    </PopoverTrigger>
+                    <PopoverContent borderWidth={0}>
+                      <FacebookSelector onSelect={(label) => {console.log(label)}}/>
+                    </PopoverContent>
+                  </Popover>
                 </Flex>
 
                 <div dangerouslySetInnerHTML={{ __html: post.content }} />

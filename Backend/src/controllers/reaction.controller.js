@@ -1,6 +1,13 @@
 const db = require("../database");
 const argon2 = require("argon2");
 
+
+exports.all = async (req, res) => {
+    const reactions = await db.reaction.findAll();
+    res.json(reactions);
+};
+
+
 exports.createReaction = async (req, res) => {
   const reaction = await db.reaction.create({
     user_email: req.body.user_email,

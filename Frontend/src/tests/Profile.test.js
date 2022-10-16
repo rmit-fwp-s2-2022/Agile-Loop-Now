@@ -7,7 +7,6 @@ import {
   updateName,
   verifyUser,
 } from "../data/repository";
-import { setCurrentUser } from "../data/User";
 import { BrowserRouter as Router } from "react-router-dom";
 
 const profileUser = {
@@ -18,7 +17,6 @@ const profileUser = {
 
 beforeEach(async () => {
   await createUser(profileUser);
-  setCurrentUser(profileUser);
 });
 
 afterEach(async () => {

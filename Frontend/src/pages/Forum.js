@@ -464,6 +464,7 @@ function Forum(props) {
                     <Box p={3} flex="1">
                       <FormControl>
                         <Input
+                          data-testid={`input-${post.post_id}`}
                           placeholder="Write a reply..."
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {

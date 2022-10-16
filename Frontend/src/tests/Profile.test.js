@@ -7,7 +7,7 @@ import {
   updateName,
   verifyUser,
 } from "../data/repository";
-import { editEmail, setCurrentUser } from "../data/User";
+import { setCurrentUser } from "../data/User";
 import { BrowserRouter as Router } from "react-router-dom";
 
 const profileUser = {
@@ -24,14 +24,6 @@ beforeEach(async () => {
 afterEach(async () => {
   await deleteUser(profileUser.email);
 });
-
-// beforeEach(() => {
-//     render(
-//         <Router>
-//             <Profile />
-//         </Router>
-//     );
-// });
 
 test("Load user profile", async () => {
   render(
@@ -59,17 +51,3 @@ test("Edit user details", async () => {
   const userName = await findUser(profileUser.email);
   expect(userName.name).toBe(newName);
 });
-
-// test("Edit user details", async () => {
-//     render(
-//         <Router>
-//             <Profile />
-//         </Router>
-//     );
-
-//     await waitFor(() => {
-//         const nameVal = screen.getByDisplayValue(profileUser.name);
-//         const newName = profileUser.name + "Edited";
-//         fireEvent.change(nameVal, { target: { value: newName } });
-
-//     })

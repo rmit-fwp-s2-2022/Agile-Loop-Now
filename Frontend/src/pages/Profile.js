@@ -29,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { editEmail, editName, getCurrentUser } from "../data/User";
+import { editEmail, editName } from "../data/User";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EditableControls from "./EditableControls";

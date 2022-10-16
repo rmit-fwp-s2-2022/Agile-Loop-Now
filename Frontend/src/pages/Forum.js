@@ -304,7 +304,8 @@ function Forum(props) {
             )}
 
             <ReactQuill
-              placeholder="What's on your mind?"
+              data-testid="quill"
+              placeholder="What's on your mind"
               theme="snow"
               name="txt"
               value={content}
@@ -329,7 +330,11 @@ function Forum(props) {
               />
               <Spacer />
               <ButtonGroup>
-                <Button colorScheme="teal" onClick={onSubmit}>
+                <Button
+                  colorScheme="teal"
+                  onClick={onSubmit}
+                  data-testid="subPost"
+                >
                   Post
                 </Button>
                 <Button
@@ -460,7 +465,8 @@ function Forum(props) {
                     <Box p={3} flex="1">
                       <FormControl>
                         <Input
-                          placeholder="custom placeholder"
+                          data-testid={`input-${post.post_id}`}
+                          placeholder="What are your thoughts"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               onComment(e, post);

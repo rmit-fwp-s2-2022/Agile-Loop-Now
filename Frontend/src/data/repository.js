@@ -218,36 +218,36 @@ async function getPostReactions(){
 
 
 
-async function loadPostsWithReactions(user) {
-  const posts = await getPosts();
-  const reactions = await getUserReactions(user);
+// async function loadPostsWithReactions(user) {
+//   const posts = await getPosts();
+//   const reactions = await getUserReactions(user);
   
 
-  let reacts = [];
-  for (const post of posts){
-    let p = {
-      content: post.content,
-      createdAt: post.createdAt,
-      link: post.link,
-      name: post.name,
-      parent_id: post.parent_id,
-      post_id: post.post_id,
-      updatedAt: post.updatedAt,
-      userEmail: post.userEmail,
-      reaction: null
-    }
-    for (const reaction of reactions){
+//   let reacts = [];
+//   for (const post of posts){
+//     let p = {
+//       content: post.content,
+//       createdAt: post.createdAt,
+//       link: post.link,
+//       name: post.name,
+//       parent_id: post.parent_id,
+//       post_id: post.post_id,
+//       updatedAt: post.updatedAt,
+//       userEmail: post.userEmail,
+//       reaction: null
+//     }
+//     for (const reaction of reactions){
       
-      if (reaction.user_email === user){
-        p.reaction = reaction.reaction;
-        break;
-      }
-    }
-    reacts.push(p);
-  }
-  console.log(reacts);
-  return reacts;
-}
+//       if (reaction.user_email === user){
+//         p.reaction = reaction.reaction;
+//         break;
+//       }
+//     }
+//     reacts.push(p);
+//   }
+//   console.log(reacts);
+//   return reacts;
+// }
 
 export {
   verifyUser,
@@ -268,5 +268,5 @@ export {
   editPost,
   deletePost,
   loadUserPosts,
-  loadPostsWithReactions
+  
 };

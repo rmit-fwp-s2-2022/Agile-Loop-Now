@@ -43,7 +43,7 @@ import {
   editPost,
   createComment,
   getComments,
-  loadPostsWithReactions
+  
 } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
@@ -75,7 +75,7 @@ function Forum(props) {
 
   useEffect(() => {
     async function loadPosts() {
-      const postData = await loadPostsWithReactions(props.user.email);
+      const postData = await getPosts();
       const commentData = await getComments();
       setPosts(postData);
       setComments(commentData);

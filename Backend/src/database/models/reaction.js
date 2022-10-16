@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) =>
   sequelize.define(
-    "reaction",
+    "follow",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -15,10 +15,6 @@ module.exports = (sequelize, DataTypes) =>
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      reaction:{
-        type: DataTypes.STRING(64),
-        allowNull: false,
-      }
     },
     {
       timestamps: false,

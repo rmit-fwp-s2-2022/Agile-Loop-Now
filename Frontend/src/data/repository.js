@@ -194,7 +194,6 @@ async function editPost(id, post) {
   return response.data;
 }
 
-<<<<<<< HEAD
 // --- Reactions ---------------------------------------------------------------------------------------
 
 async function getUserReactions(user) {
@@ -250,8 +249,6 @@ async function loadPostsWithReactions(user) {
   return reacts;
 }
 
-=======
->>>>>>> 2a1e8420703ded2455c0f4306ac2b860bb20af4f
 export {
   verifyUser,
   findUser,
@@ -271,4 +268,5 @@ export {
   editPost,
   deletePost,
   loadUserPosts,
+  loadPostsWithReactions
 };

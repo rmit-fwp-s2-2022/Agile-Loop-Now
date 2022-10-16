@@ -29,12 +29,4 @@ test("Post test", async () => {
     name: "Post",
   });
   expect(subButtonVal).toBeTruthy();
-  //   fireEvent.change(inputVal, { target: { value: post.content } });
-  //   expect(inputVal.value).toBe(post.content);
-
-  //Create new user in the database and check whether the created user is the expected testUser
-  //   await waitFor(async () => {
-  //     const data = await createComment(comment);
-  //     expect(data.content).toBe(comment.content);
-  //   });
 });

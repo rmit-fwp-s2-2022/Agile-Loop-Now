@@ -217,47 +217,70 @@ async function getAllReactions(){
   return reactions.data;
 }
 
-async function getPostReactions(){
-  const posts = await getPosts();
+
+async function getCommentReactions(){
+  const posts = await getComments();
   const reactions = await getAllReactions();
-  let counters = []
-  // for (const post of posts){
-  //   for
-  // }
+  let forms = []
+
+  for (const post of posts){
+    
+    let p = {
+            content: post.content,
+            createdAt: post.createdAt,
+            link: post.link,
+            name: post.name,
+            parent_id: post.parent_id,
+            post_id: post.post_id,
+            updatedAt: post.updatedAt,
+            userEmail: post.userEmail,
+            counter: []
+          }
+    for (const reaction of reactions){
+      if (post.post_id === reaction.post_id){
+        const user = reaction.user_email;
+        p.counter.push({emoji: reaction.reaction, by: user });
+      }
+    }
+ 
+    forms.push(p);
+  }
+  
+  return forms;
 }
 
 
 
-// async function loadPostsWithReactions(user) {
-//   const posts = await getPosts();
-//   const reactions = await getUserReactions(user);
-  
+async function getPostReactions(){
+  const posts = await getPosts();
+  const reactions = await getAllReactions();
+  let forms = []
 
-//   let reacts = [];
-//   for (const post of posts){
-//     let p = {
-//       content: post.content,
-//       createdAt: post.createdAt,
-//       link: post.link,
-//       name: post.name,
-//       parent_id: post.parent_id,
-//       post_id: post.post_id,
-//       updatedAt: post.updatedAt,
-//       userEmail: post.userEmail,
-//       reaction: null
-//     }
-//     for (const reaction of reactions){
-      
-//       if (reaction.user_email === user){
-//         p.reaction = reaction.reaction;
-//         break;
-//       }
-//     }
-//     reacts.push(p);
-//   }
-//   console.log(reacts);
-//   return reacts;
-// }
+  for (const post of posts){
+    
+    let p = {
+            content: post.content,
+            createdAt: post.createdAt,
+            link: post.link,
+            name: post.name,
+            parent_id: post.parent_id,
+            post_id: post.post_id,
+            updatedAt: post.updatedAt,
+            userEmail: post.userEmail,
+            counter: []
+          }
+    for (const reaction of reactions){
+      if (post.post_id === reaction.post_id){
+        const user = reaction.user_email;
+        p.counter.push({emoji: reaction.reaction, by: user});
+      }
+    }
+    forms.push(p);
+  }
+  
+  return forms;
+}
+
 
 export {
   verifyUser,
@@ -278,5 +301,9 @@ export {
   editPost,
   deletePost,
   loadUserPosts,
-  createReaction
+  createReaction,
+  getPostReactions,
+  getCommentReactions,
+  getUserReactions,
+  deleteReaction
 };

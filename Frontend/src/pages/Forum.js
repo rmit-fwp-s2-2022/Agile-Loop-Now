@@ -26,7 +26,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  PopoverBody
 } from "@chakra-ui/react";
 
 import axios from "axios";
@@ -42,14 +41,15 @@ import {
   deletePost,
   editPost,
   createComment,
-  getComments,
-  createReaction
+  createReaction,
+  getPostReactions,
+  getCommentReactions
   
 } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { ReactionBarSelector, PokemonSelector, PokemonCounter, FacebookCounter, FacebookSelector, emoji  } from '@charkour/react-reactions';
+import { FacebookCounter, FacebookSelector } from '@charkour/react-reactions';
 
 function Forum(props) {
   const toast = useToast();
@@ -69,15 +69,12 @@ function Forum(props) {
 
   const API = "https://api.cloudinary.com/v1_1/aglie-loop/image/upload";
 
-  function selectReaction(){
-    console.log()
-  }
-
 
   useEffect(() => {
     async function loadPosts() {
-      const postData = await getPosts();
-      const commentData = await getComments();
+      const postData = await getPostReactions();
+      const commentData = await getCommentReactions();
+      await getPostReactions();
       setPosts(postData);
       setComments(commentData);
     }
@@ -91,6 +88,29 @@ function Forum(props) {
       post_id: post_id,
       reaction: emoji
     }
+    let updatePost = posts;
+    for (const p of updatePost){
+      if (p.post_id === post_id){
+        p.counter.push({emoji: emoji, by: props.user.name });
+      }
+    }
+    setPosts([...updatePost]);
+    await createReaction(reaction);
+  }
+
+  async function newReactionComment(post_id, emoji){
+    const reaction = {
+      user_email: props.user.email,
+      post_id: post_id,
+      reaction: emoji
+    }
+    let updateComment = comments;
+    for (const p of updateComment){
+      if (p.post_id === post_id){
+        p.counter.push({emoji: emoji, by: props.user.name });
+      }
+    }
+    setComments([...updateComment]);
     await createReaction(reaction);
   }
 
@@ -401,15 +421,16 @@ function Forum(props) {
                     </Text>
                   </Box>
                   <Spacer />
-                  
+              
                   <Popover placement='top-start' matchWidth>
                     <PopoverTrigger>
-                      <FacebookCounter />
+                      <FacebookCounter counters={post.counter} user={props.user.email} />
                     </PopoverTrigger>
                     <PopoverContent borderWidth={0}>
                       <FacebookSelector onSelect={(label) => newReaction(post.post_id, label)}/>
                     </PopoverContent>
                   </Popover>
+                  
                 </Flex>
 
                 <div dangerouslySetInnerHTML={{ __html: post.content }} />
@@ -486,6 +507,19 @@ function Forum(props) {
                                 }}
                               />
                             </Box>
+                            <Spacer />
+                 
+                            <Box mt={7}>
+                              <Popover placement='top-start' matchWidth>
+                                <PopoverTrigger>
+                                  <FacebookCounter counters={comment.counter} user={props.user.email}/>
+                                </PopoverTrigger>
+                                <PopoverContent borderWidth={0}>
+                                  <FacebookSelector onSelect={(label) => newReactionComment(comment.post_id, label)}/>
+                                </PopoverContent>
+                              </Popover>
+                            </Box>
+                            
                           </Flex>
                         </Box>
                       )

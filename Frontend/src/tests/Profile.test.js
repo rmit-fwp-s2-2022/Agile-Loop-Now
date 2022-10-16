@@ -8,6 +8,7 @@ import {
   verifyUser,
 } from "../data/repository";
 import { BrowserRouter as Router } from "react-router-dom";
+import { useParams, MemoryRouter } from "react-router-dom";
 
 const profileUser = {
   name: "Profile User",
@@ -23,23 +24,17 @@ afterEach(async () => {
   await deleteUser(profileUser.email);
 });
 
-test("Load user profile", async () => {
-  render(
-    <Router>
-      <Profile
-        user={await verifyUser(profileUser.email, profileUser.password)}
-      />
-    </Router>
-  );
-
-  //Page should display "Loading" while user data is being fetched from database
-  expect(screen.getByText("Loading")).toBeInTheDocument();
-
-  await waitFor(() => {
-    //Page should display User information such as Name, Email
-    expect(screen.getByText(profileUser.name)).toBeInTheDocument();
-    expect(screen.getByText(profileUser.email)).toBeInTheDocument();
-  });
+//Unit test was taken from https://stackoverflow.com/questions/58117890/how-to-test-components-using-new-react-router-hooks/58206121#58206121
+describe("Testing user profile", () => {
+  jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
+    useParams: () => ({
+      id: "profileUser@email.com",
+    }),
+    useRouteMatch: () => ({
+      url: "http://localhost:3000/profile/profileUser@email.com",
+    }),
+  }));
 });
 
 test("Edit user details", async () => {

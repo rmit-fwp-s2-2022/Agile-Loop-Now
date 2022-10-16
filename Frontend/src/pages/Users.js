@@ -70,6 +70,7 @@ function Users(props) {
 
       {users.map((user, index) => (
         <Box
+          data-testid="follow"
           p={4}
           rounded={"lg"}
           borderWidth={1}

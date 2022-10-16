@@ -63,6 +63,7 @@ async function getPosts() {
       }
     }
   }
+  console.log(posts.data)
   return posts.data;
 }
 
@@ -199,6 +200,45 @@ async function editPost(id, post) {
   return response.data;
 }
 
+// --- Reactions ---------------------------------------------------------------------------------------
+
+async function getUserReactions(user) {
+  const response = await axios.get(API_HOST + `/api/reactions/getReacts/${user}`);
+  return response.data;
+}
+
+async function deleteReaction(id) {
+  const response = await axios.delete(API_HOST + `/api/reactions/delete/${id}`);
+  return response.data;
+}
+
+async function loadPostsWithReactions(user) {
+  const posts = await getPosts();
+  const reactions = await getUserReactions(user);
+  let reacts = [];
+  for (const post of posts){
+    let p = {
+      content: post.content,
+      createdAt: post.createdAt,
+      link: post.link,
+      name: post.name,
+      parent_id: post.parent_id,
+      post_id: post.post_id,
+      updatedAt: post.updatedAt,
+      userEmail: post.userEmail,
+      reaction: null
+    }
+    for (const reaction of reactions){
+      if (reaction.user_email === post.userEmail){
+        p.reaction = reaction.reaction;
+        break;
+      }
+    }
+    reacts.push(p);
+  }
+
+  return reacts;
+}
 
 export {
   verifyUser,
@@ -218,5 +258,6 @@ export {
   getComments,
   editPost,
   deletePost,
-  loadUserPosts
+  loadUserPosts,
+  loadPostsWithReactions
 };

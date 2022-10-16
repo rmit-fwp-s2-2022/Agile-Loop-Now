@@ -33,6 +33,13 @@ db.post.belongsTo(db.user, {
   foreignKey: { userEmail: "email", allowNull: false },
 });
 
+db.reaction.belongsTo(db.post, {
+  foreignKey: { post_id: "post_id", allowNull: false },
+});
+
+db.follow.belongsTo(db.user, {
+  foreignKey: { user_email: "email", allowNull: false },
+});
 
 // db.follow.belongsTo(db.user, { foreignKey: 'user_email'});
 // db.follow.belongsTo(db.user, { foreignKey: 'follower_email'});

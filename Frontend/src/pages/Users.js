@@ -1,15 +1,14 @@
 import { Box, Heading, Avatar, Flex, Text, Button } from "@chakra-ui/react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   loadUsersWithFollowers,
-  isFollowing,
   createFollow,
-  deleteFollow
+  deleteFollow,
 } from "../data/repository";
 
 function Users(props) {
   const [users, setUsers] = useState([]);
-  
+
   useEffect(() => {
     async function loadUsers() {
       const userData = await loadUsersWithFollowers(props.user.email);
@@ -19,33 +18,45 @@ function Users(props) {
     loadUsers();
   }, [setUsers]);
 
-  async function followUnfollow (isFollowing, followID, follower_email, index) {
-    if (isFollowing){
-        let user = users;
-        user[index].following = false;
-        setUsers([...user]);
-        await deleteFollow(followID);
-      
-    
-    }else{
-        let user = users;
-        user[index].following = true;
-        setUsers([...user]);
-        await createFollow({user_email: props.user.email, follower_email: follower_email});
-        
+  async function followUnfollow(isFollowing, followID, follower_email, index) {
+    if (isFollowing) {
+      let user = users;
+      user[index].following = false;
+      setUsers([...user]);
+      await deleteFollow(followID);
+    } else {
+      let user = users;
+      user[index].following = true;
+      setUsers([...user]);
+      await createFollow({
+        user_email: props.user.email,
+        follower_email: follower_email,
+      });
     }
   }
- 
-  function FollowButton({ isFollowing, followID, follower_email, index}) {
 
+  function FollowButton({ isFollowing, followID, follower_email, index }) {
     return (
       <Box ml={140} pr={5}>
         {isFollowing ? (
-          <Button colorScheme="teal" variant="solid" textAlign={"center"} onClick={() => followUnfollow(isFollowing, followID, follower_email, index)}>
+          <Button
+            colorScheme="teal"
+            variant="solid"
+            textAlign={"center"}
+            onClick={() =>
+              followUnfollow(isFollowing, followID, follower_email, index)
+            }
+          >
             Following
           </Button>
         ) : (
-          <Button variant="outline" textAlign={"center"} onClick={() => followUnfollow(isFollowing, followID, follower_email, index)}>
+          <Button
+            variant="outline"
+            textAlign={"center"}
+            onClick={() =>
+              followUnfollow(isFollowing, followID, follower_email, index)
+            }
+          >
             Follow
           </Button>
         )}
@@ -55,9 +66,8 @@ function Users(props) {
 
   return (
     <Box align={"center"} mt={15} minH={"75vh"}>
-
       <Heading color={"gray.500"}>Active Users</Heading>
-      
+
       {users.map((user, index) => (
         <Box
           p={4}
@@ -79,8 +89,13 @@ function Users(props) {
                 {" "}
                 {user.email}
               </Text>
-              
-              <FollowButton isFollowing={user.following} followID={user.follow_id} follower_email={user.email} index={index}/>
+
+              <FollowButton
+                isFollowing={user.following}
+                followID={user.follow_id}
+                follower_email={user.email}
+                index={index}
+              />
             </Box>
           </Flex>
         </Box>

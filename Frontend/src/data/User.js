@@ -1,13 +1,17 @@
+//The code below is taken from Lectorial code archive week 8
+//Writen by Shekhar Kalra
+import http from "./http-common";
+
 import { deleteAllUserPost } from "./Posts";
 const USERS_KEY = "users";
 const CURRENT_KEY = "currentUser";
 const AUTH_KEY = "authuser";
 
-//Get every registered user from localStorage (Referenced from Week 3 Lecture code example 10)
-function getUsers() {
-  const data = localStorage.getItem(USERS_KEY);
-  return JSON.parse(data);
+async function getUsers() {
+  const res = await http.get("/users");
+  return res.data;
 }
+
 //Get user details of a user from their email
 function getUser(email) {
   const userData = getUsers();
@@ -22,19 +26,16 @@ function getUser(email) {
 }
 
 //Add a user to localStorage
-function addUser(user) {
+async function addUser(user) {
   //If there are already users registered, retrieve all users and add the new user onto the user array and store the updated list in localStorage
-  if (getUsers() !== null) {
-    let data = getUsers();
-    data.push(user);
-    localStorage.setItem(USERS_KEY, JSON.stringify(data));
-  } else {
-    const data = [user];
-    localStorage.setItem(USERS_KEY, JSON.stringify(data));
-  }
+
+  const res = await http.post("/users/create", user);
+
+  return res.data;
+
 }
 
-//Check whether an email has already been registered
+// Check whether an email has already been registered
 function verifyEmail(email) {
   if (getUser(email) === null) {
     return false;
@@ -42,7 +43,6 @@ function verifyEmail(email) {
     return true;
   }
 }
-
 //Set the current logged in user in sessionStorage (Referenced from Week 3 Lecture code example 10)
 function setCurrentUser(user) {
   sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
@@ -55,30 +55,18 @@ function getCurrentUser() {
 
 //Edit email of specific user
 function editEmail(currentEmail, newEmail) {
-  let userInfo = getUsers();
-  //Loop all users to find the specific user
-  for (let user of userInfo) {
-    if (user.email === currentEmail) {
-      user.email = newEmail;
-      sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user)); //Email changed in session storage as well
-      break;
-    }
-  }
-
-  localStorage.setItem(USERS_KEY, JSON.stringify(userInfo)); //Update the new email on local storage
+  let user = getCurrentUser();
+  user.email = newEmail;
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+  
 }
 
 //Edit name of specific user (same logic as editEmail)
 function editName(currentEmail, newName) {
-  let userInfo = getUsers();
-  for (let user of userInfo) {
-    if (user.email === currentEmail) {
-      user.name = newName;
-      sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
-      break;
-    }
-  }
-  localStorage.setItem(USERS_KEY, JSON.stringify(userInfo));
+  let user = getCurrentUser();
+  user.name = newName;
+  sessionStorage.setItem(CURRENT_KEY, JSON.stringify(user));
+ 
 }
 
 //Log out the user by removing from session storage (Referenced from Week 3 Lecture code example 10)
@@ -116,6 +104,7 @@ function getAuthentication() {
 }
 
 export {
+  getUsers,
   addUser,
   getUser,
   verifyEmail,

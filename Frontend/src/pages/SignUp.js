@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Link as RouteLink, useNavigate } from "react-router-dom";
+import { Link as RouteLink, useNavigate, generatePath} from "react-router-dom";
 import FormField from "./FormField";
 import { findUser, createUser } from "../data/repository";
 
@@ -66,10 +66,12 @@ function SignUp(props) {
                 password: values.password,
                 joinedOn: joined,
               };
+              
               await createUser(user); //Add user to mySQL database
-              // addUser(user); //Add user to local storage
+              
               props.loginUser(user); //Set logged in user
-              navigate("/");
+              navigate(generatePath("/profile/:id", { id:user.email }));
+              
             }, 1500);
           }}
           

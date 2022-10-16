@@ -132,7 +132,6 @@ function Forum(props) {
 
   const onComment = async (e, post) => {
     const apiCom = await getComments();
-   
 
     const comment = {
       content: e.target.value,
@@ -304,7 +303,8 @@ function Forum(props) {
             )}
 
             <ReactQuill
-              placeholder="What's on your mind?"
+              data-testid="quill"
+              placeholder="What's on your mind"
               theme="snow"
               name="txt"
               value={content}
@@ -329,7 +329,11 @@ function Forum(props) {
               />
               <Spacer />
               <ButtonGroup>
-                <Button colorScheme="teal" onClick={onSubmit}>
+                <Button
+                  colorScheme="teal"
+                  onClick={onSubmit}
+                  data-testid="subPost"
+                >
                   Post
                 </Button>
                 <Button

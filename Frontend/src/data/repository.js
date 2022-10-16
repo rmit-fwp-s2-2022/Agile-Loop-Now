@@ -196,6 +196,12 @@ async function editPost(id, post) {
 
 // --- Reactions ---------------------------------------------------------------------------------------
 
+async function createReaction(reaction) {
+  console.log(reaction);
+  const response = await axios.post(API_HOST + "/api/reactions/reaction", reaction);
+  return response.data;
+}
+
 async function getUserReactions(user) {
   const response = await axios.get(API_HOST + `/api/reactions/getReacts/${user}`);
   return response.data;
@@ -214,6 +220,10 @@ async function getAllReactions(){
 async function getPostReactions(){
   const posts = await getPosts();
   const reactions = await getAllReactions();
+  let counters = []
+  // for (const post of posts){
+  //   for
+  // }
 }
 
 
@@ -268,5 +278,5 @@ export {
   editPost,
   deletePost,
   loadUserPosts,
-  
+  createReaction
 };

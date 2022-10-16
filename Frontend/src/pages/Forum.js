@@ -43,6 +43,7 @@ import {
   editPost,
   createComment,
   getComments,
+  createReaction
   
 } from "../data/repository";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,7 +82,18 @@ function Forum(props) {
       setComments(commentData);
     }
     loadPosts();
-  }, [setPosts]);
+  }, [setPosts], );
+
+
+  async function newReaction(post_id, emoji){
+    const reaction = {
+      user_email: props.user.email,
+      post_id: post_id,
+      reaction: emoji
+    }
+    await createReaction(reaction);
+  }
+
 
   function ModalComponent() {
     return (
@@ -395,7 +407,7 @@ function Forum(props) {
                       <FacebookCounter />
                     </PopoverTrigger>
                     <PopoverContent borderWidth={0}>
-                      <FacebookSelector onSelect={(label) => {console.log(label)}}/>
+                      <FacebookSelector onSelect={(label) => newReaction(post.post_id, label)}/>
                     </PopoverContent>
                   </Popover>
                 </Flex>

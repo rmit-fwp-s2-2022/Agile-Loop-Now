@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getUsers } from "./User";
 
 //The code below is taken from Lectorial code archive week 8
 //Writen by Shekhar Kalra
@@ -20,7 +19,6 @@ async function findUser(id) {
   const response = await axios.get(API_HOST + `/api/users/select/${id}`);
   return response.data;
 }
-
 
 async function createUser(user) {
   const response = await axios.post(API_HOST + "/api/users", user);
@@ -66,20 +64,19 @@ async function getPosts() {
   return posts.data;
 }
 
-async function loadUserPosts(user){
+async function loadUserPosts(user) {
   const posts = await getPosts();
- 
+
   let userPosts = [];
 
-  for (const post of posts){
-    if (post.userEmail === user){
+  for (const post of posts) {
+    if (post.userEmail === user) {
       userPosts.push(post);
     }
   }
   // console.log(userPosts);
   return userPosts;
 }
-
 
 async function createPost(post) {
   const response = await axios.post(API_HOST + "/api/posts/create", post);
@@ -109,27 +106,26 @@ async function deletePost(id) {
   return response.data;
 }
 
-
 // --- Follow ---------------------------------------------------------------------------------------
 async function getUserFollows(user) {
   const response = await axios.get(API_HOST + `/api/follows/getUser/${user}`);
   return response.data;
 }
 
-async function getFollowings(user){
+async function getFollowings(user) {
   const follows = await getUserFollows(user);
   const users = await axios.get(API_HOST + "/api/users");
   let following = [];
 
-  for (const follow of follows){
-    for (const user of users.data){
-      if (user.email === follow.follower_email){
+  for (const follow of follows) {
+    for (const user of users.data) {
+      if (user.email === follow.follower_email) {
         let u = {
           email: user.email,
           name: user.name,
           following: true,
-          follow_id: follow.id
-        }
+          follow_id: follow.id,
+        };
         following.push(u);
       }
     }
@@ -141,15 +137,15 @@ async function loadUsersWithFollowers(user) {
   const users = await axios.get(API_HOST + "/api/users");
   const followers = await getUserFollows(user);
   let following = [];
-  for (const user of users.data){
+  for (const user of users.data) {
     let u = {
       email: user.email,
       name: user.name,
       following: false,
-      follow_id: null
-    }
-    for (const follow of followers){
-      if (follow.follower_email === user.email){
+      follow_id: null,
+    };
+    for (const follow of followers) {
+      if (follow.follower_email === user.email) {
         u.following = true;
         u.follow_id = follow.id;
         break;
@@ -184,7 +180,6 @@ async function deleteFollow(id) {
   return response.data;
 }
 
-
 async function editPost(id, post) {
   let response = null;
   if (post.link === "") {
@@ -198,7 +193,6 @@ async function editPost(id, post) {
 
   return response.data;
 }
-
 
 export {
   verifyUser,
@@ -218,5 +212,5 @@ export {
   getComments,
   editPost,
   deletePost,
-  loadUserPosts
+  loadUserPosts,
 };

@@ -131,8 +131,6 @@ function Forum(props) {
   //Fetch all the posts made by all the users
 
   const onComment = async (e, post) => {
-    const apiCom = await getComments();
-
     const comment = {
       content: e.target.value,
       userEmail: post.userEmail,

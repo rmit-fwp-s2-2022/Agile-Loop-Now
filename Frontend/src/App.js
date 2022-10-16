@@ -51,7 +51,7 @@ function App() {
           <Route path="users" element={<Users user={user} />} />
           <Route path="testing" element={<Testing />} />
           <Route
-            path="profile"
+            path="profile/:id"
             element={<Profile user={user} logout={logoutUser} />}
           />
           <Route

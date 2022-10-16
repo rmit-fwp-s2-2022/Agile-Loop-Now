@@ -1,6 +1,5 @@
 import {
   Box,
-  Center,
   Container,
   Avatar,
   Stack,
@@ -32,7 +31,6 @@ import {
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { editEmail, editName, getCurrentUser } from "../data/User";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableControls from "./EditableControls";
@@ -51,7 +49,7 @@ function Profile(props) {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  const user = getCurrentUser();
+  // const user = getCurrentUser();
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -115,7 +113,6 @@ function Profile(props) {
                   })}
                   onSubmit={async (value) => {
                     if (userName !== value.name) {
-                      editName(userEmail, value.name);
                       await updateName(value.name, userEmail);
 
                       setAlertName(true);
@@ -189,7 +186,6 @@ function Profile(props) {
                   })}
                   onSubmit={async (value) => {
                     if (userEmail !== value.email) {
-                      editEmail(userEmail, value.email);
                       await updateEmail(userEmail, value.email);
                       setAlertEmail(true);
                       setUserEmail(value.email);
